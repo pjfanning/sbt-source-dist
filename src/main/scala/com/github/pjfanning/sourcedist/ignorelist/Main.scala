@@ -25,7 +25,6 @@ object Main extends App {
     customIgnorePatterns.add(".git/")
     customIgnorePatterns.add(".github/")
     customIgnorePatterns.add(".git*")
-    customIgnorePatterns.add(".bsp")
     customIgnorePatterns.add(".asf.yaml")
     ignoreList.addPatterns(customIgnorePatterns)
     val files = getIncludedFiles(baseDir, ignoreList)
