@@ -11,12 +11,13 @@ import java.util.zip.{ZipEntry, ZipOutputStream}
 
 object Main extends App {
   val homeDirectory = "/Users/pj.fanning/code/incubator-pekko"
+  val namePrefix = "incubator-pekko"
   // TODO remove hardcoded version - needs to become a param derived from git tag (or a property)
   val versionString = "0.0.0"
 
-  generateSourceDists(homeDirectory, versionString)
+  generateSourceDists(homeDirectory, namePrefix, versionString)
 
-  private def generateSourceDists(homeDir: String, version: String): Unit = {
+  private def generateSourceDists(homeDir: String, prefix: String, version: String): Unit = {
     val baseDir = new File(homeDir)
 
     val ignoreList = new IgnoreList(baseDir)
@@ -33,7 +34,7 @@ object Main extends App {
     val dateTimeFormatter = DateTimeFormatter.BASIC_ISO_DATE
     val dateString = LocalDate.now().format(dateTimeFormatter)
     val toFileDir = s"$homeDir/target/dist/"
-    val baseFileName = s"incubator-pekko-src-$version-$dateString"
+    val baseFileName = s"$prefix-src-$version-$dateString"
     val toZipFileName = s"$toFileDir/$baseFileName.zip"
     val toTgzFileName = s"$toFileDir/$baseFileName.tgz"
     val toZipFile = new File(toZipFileName)
