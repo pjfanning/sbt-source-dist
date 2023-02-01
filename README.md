@@ -10,4 +10,3 @@ This will ultimately be refactored so it can be called as an sbt task.
 * Uses the .gitignore and some extra custom patterns to exclude files from the generated zip and tgz files
 * Outputs to target/dist directory
 * The `Main` class hard codes `val homeDirectory` - so anyone trying this out should adjust that to match their setup
-* The contents of the distributions has not been tested yet (to see if they can be used for Pekko builds/tests)
