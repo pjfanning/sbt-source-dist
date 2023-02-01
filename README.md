@@ -1,9 +1,9 @@
-# source-dist
+# sbt-source-dist
 
 An attempt to prototype the code to produce source distributions for
 [Apache Pekko](https://github.com/apache/incubator-pekko).
 
-This will ultimately be refactored so it can be called from an sbt task.
+This will ultimately be refactored so it can be called as an sbt task.
 
 * Some code comes from https://github.com/neva-dev/gitignore-file-filter
 * Some of the code was converted from the original Java to Scala - partially via IntelliJ autoconversion - some of that code needs work - to better follow Scala norms
