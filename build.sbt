@@ -6,6 +6,8 @@ description := "sbt plugin to generate source distributions"
 
 sbtPlugin := true
 
+javacOptions ++= Seq("-source", "1.8", "-target", "1.8")
+
 ThisBuild / version := "0.1.0-SNAPSHOT"
 
 ThisBuild / scalaVersion := "2.12.17"
