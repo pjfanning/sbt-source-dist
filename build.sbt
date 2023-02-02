@@ -14,7 +14,8 @@ ThisBuild / scalaVersion := "2.12.17"
 
 libraryDependencies ++= Seq(
   "commons-io" % "commons-io" % "2.11.0",
-  "org.apache.commons" % "commons-compress" % "1.22"
+  "org.apache.commons" % "commons-compress" % "1.22",
+  "org.scala-sbt" %% "io" % "1.8.0" % Runtime
 )
 
 homepage := Some(url("https://github.com/pjfanning/sbt-source-dist"))

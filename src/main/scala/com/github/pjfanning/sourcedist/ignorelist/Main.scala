@@ -25,8 +25,8 @@ object Main extends App {
     customIgnorePatterns.add(".git*")
     customIgnorePatterns.add(".asf.yaml")
     ignoreList.addPatterns(customIgnorePatterns)
-    val files = getIncludedFiles(baseDir, ignoreList)
-    //files.sortBy(_.getAbsolutePath).foreach(f => println(removeBasePath(f.getAbsolutePath, homeDir)))
+    val files = getIncludedFiles(baseDir, ignoreList).sortBy(_.getAbsolutePath)
+    //files.foreach(f => println(removeBasePath(f.getAbsolutePath, homeDir)))
 
     val dateTimeFormatter = DateTimeFormatter.BASIC_ISO_DATE
     val dateString = LocalDate.now().format(dateTimeFormatter)
@@ -34,7 +34,8 @@ object Main extends App {
     val baseFileName = s"$prefix-src-$version-$dateString"
     val toZipFileName = s"$toFileDir/$baseFileName.zip"
     val toTgzFileName = s"$toFileDir/$baseFileName.tgz"
-    IO.zip(files.map{file =>
+    println(toZipFileName)
+    IO.zip(files.map { file =>
       (file, removeBasePath(file.getAbsolutePath, homeDir))
     }, new File(toZipFileName), None)
     TarUtils.tgzFiles(toTgzFileName, files, homeDir)

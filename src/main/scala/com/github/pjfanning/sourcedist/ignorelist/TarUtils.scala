@@ -17,7 +17,7 @@ object TarUtils {
       val gzOut = new GzipCompressorOutputStream(buffOut);
       val tos = new TarArchiveOutputStream(gzOut)
       tos.setLongFileMode(TarArchiveOutputStream.LONGFILE_POSIX)
-      filesToInclude.sortBy(_.getAbsolutePath).foreach { f =>
+      filesToInclude.foreach { f =>
         val truncatedFileName = removeBasePath(f.getAbsolutePath, homeDir)
         val tarEntry = new TarArchiveEntry(truncatedFileName)
         tarEntry.setSize(f.length())
