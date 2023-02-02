@@ -1,20 +1,17 @@
-package com.github.pjfanning.sourcedist.ignorelist
+package com.github.pjfanning.sourcedist
 
+import ignorelist._
 import java.io.File
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
 import sbt.io.IO
 
-object Main extends App {
-  val homeDirectory = "/Users/pj.fanning/code/incubator-pekko"
-  val namePrefix = "incubator-pekko"
-  // TODO remove hardcoded version - needs to become a param derived from git tag (or a property)
-  val versionString = "0.0.0"
-
-  generateSourceDists(homeDirectory, namePrefix, versionString)
-
-  private def generateSourceDists(homeDir: String, prefix: String, version: String): Unit = {
+private[sourcedist] object SourceDistGenerate {
+  private[sourcedist] def generateSourceDists(homeDir: String,
+                                              prefix: String,
+                                              targetDir: String,
+                                              version: String): Unit = {
     val baseDir = new File(homeDir)
 
     val ignoreList = new IgnoreList(baseDir)
@@ -30,11 +27,11 @@ object Main extends App {
 
     val dateTimeFormatter = DateTimeFormatter.BASIC_ISO_DATE
     val dateString = LocalDate.now().format(dateTimeFormatter)
-    val toFileDir = s"$homeDir/target/dist/"
     val baseFileName = s"$prefix-src-$version-$dateString"
-    val toZipFileName = s"$toFileDir/$baseFileName.zip"
-    val toTgzFileName = s"$toFileDir/$baseFileName.tgz"
-    IO.zip(files.map{file =>
+    val toZipFileName = s"$targetDir/$baseFileName.zip"
+    val toTgzFileName = s"$targetDir/$baseFileName.tgz"
+
+    IO.zip(files.map { file =>
       (file, removeBasePath(file.getAbsolutePath, homeDir))
     }, new File(toZipFileName), None)
     TarUtils.tgzFiles(toTgzFileName, files, homeDir)
