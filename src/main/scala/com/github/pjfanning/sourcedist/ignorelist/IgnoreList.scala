@@ -3,10 +3,6 @@ package com.github.pjfanning.sourcedist.ignorelist
 import java.io.File
 import scala.collection.mutable
 
-object GitIgnore {
-  val FILE_NAME = ".gitignore"
-}
-
 class IgnoreList(private val rootDir: File) {
   private val patternListCache = mutable.Map[File, PathPatternList]()
   private val patternDefaults = mutable.Buffer[PathPatternList]()

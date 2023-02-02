@@ -32,6 +32,9 @@
  * However, if you add GPL Version 2 code and therefore, elected the GPL
  * Version 2 license, then the option applies only if the new code is
  * made subject to such option by the copyright holder.
+ *
+ * pjfanning elects to include this software in this distribution
+ * under the CDDL license.
  */
 package com.github.pjfanning.sourcedist.ignorelist
 
@@ -40,8 +43,8 @@ class PathPatternList(private val basePath: String) {
 
   def add(patternString: String): Unit = {
     val pattern = PathPattern.create(patternString)
-    if (pattern.isExclude) patterns = patterns.appended(pattern)
-    else patterns = patterns.prepended(pattern)
+    if (pattern.isExclude) patterns = patterns.:+(pattern)
+    else patterns = patterns.+:(pattern)
   }
 
   def findPattern(path: String, isDirectory: Boolean): Option[PathPattern] = {

@@ -32,6 +32,9 @@
  * However, if you add GPL Version 2 code and therefore, elected the GPL
  * Version 2 license, then the option applies only if the new code is
  * made subject to such option by the copyright holder.
+ *
+ * pjfanning elects to include this software in this distribution
+ * under the CDDL license.
  */
 package com.github.pjfanning.sourcedist.ignorelist
 
@@ -44,7 +47,7 @@ object PathPattern {
   private def isWildcard(c: Char) = c == '*' || c == '[' || c == '?' || c == '\\'
 
   private def hasNoWildcards(pattern: String, from: Int, to: Int): Boolean = {
-    (from until to).collectFirst { i =>
+    (from until to).collectFirst { case i =>
       !isWildcard(pattern.charAt(i))
     }.isEmpty
   }

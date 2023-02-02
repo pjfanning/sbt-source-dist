@@ -1,13 +1,8 @@
 package com.github.pjfanning.sourcedist.ignorelist
 
-import org.apache.commons.compress.archivers.tar.{TarArchiveEntry, TarArchiveOutputStream}
-import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream
-import org.apache.commons.io.IOUtils
-
-import java.io.{BufferedOutputStream, File, FileInputStream, FileOutputStream}
+import java.io.File
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-import java.util.zip.{ZipEntry, ZipOutputStream}
 
 object Main extends App {
   val homeDirectory = "/Users/pj.fanning/code/incubator-pekko"
@@ -37,63 +32,9 @@ object Main extends App {
     val baseFileName = s"$prefix-src-$version-$dateString"
     val toZipFileName = s"$toFileDir/$baseFileName.zip"
     val toTgzFileName = s"$toFileDir/$baseFileName.tgz"
-    val toZipFile = new File(toZipFileName)
-    val toTgzFile = new File(toTgzFileName)
-    new File(toFileDir).mkdirs()
-    if (toZipFile.exists()) toZipFile.delete()
-    val toZipFileStream = new FileOutputStream(toZipFile)
-    if (toTgzFile.exists()) toTgzFile.delete()
-    val toTgzFileStream = new FileOutputStream(toTgzFile)
-    try {
-      val zos = new ZipOutputStream(toZipFileStream)
-      val buffOut = new BufferedOutputStream(toTgzFileStream)
-      val gzOut = new GzipCompressorOutputStream(buffOut);
-      val tos = new TarArchiveOutputStream(gzOut)
-      tos.setLongFileMode(TarArchiveOutputStream.LONGFILE_POSIX)
-
-      files.sortBy(_.getAbsolutePath).foreach { f =>
-        val truncatedFileName = removeBasePath(f.getAbsolutePath, homeDir)
-        println(truncatedFileName)
-        val zipEntry = new ZipEntry(truncatedFileName)
-        zos.putNextEntry(zipEntry)
-        val fis = new FileInputStream(f)
-        try {
-          IOUtils.copy(fis, zos)
-        } finally {
-          IOUtils.closeQuietly(fis)
-        }
-        zos.closeEntry()
-
-        val tarEntry = new TarArchiveEntry(truncatedFileName)
-        tarEntry.setSize(f.length())
-        tos.putArchiveEntry(tarEntry)
-        val fis2 = new FileInputStream(f)
-        try {
-          IOUtils.copy(fis2, tos)
-        } finally {
-          IOUtils.closeQuietly(fis2)
-        }
-        tos.closeArchiveEntry()
-      }
-      zos.close()
-      tos.close()
-    } finally {
-      toZipFileStream.close()
-      toTgzFileStream.close()
-    }
-  }
-
-  private def removeBasePath(fileName: String, basePath: String): String = {
-    val truncated = if (fileName.startsWith(basePath)) {
-      fileName.substring(basePath.length)
-    } else {
-      fileName
-    }
-    if (truncated.startsWith("/")) {
-      truncated.substring(1)
-    } else {
-      truncated
-    }
+    println(toZipFileName)
+    ZipUtils.zipFiles(toZipFileName, files, homeDir)
+    TarUtils.tgzFiles(toTgzFileName, files, homeDir)
   }
 
   private def getIncludedFiles(dir: File, ignoreList: IgnoreList): Seq[File] = {
