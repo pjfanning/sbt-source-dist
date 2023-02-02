@@ -21,3 +21,8 @@ match the Apache project name you can do
 ```sbt
 sourceDistName := "My Apache Project"
 ```
+
+Once the plugin is enabled, you can generate the source distributions using
+```
+sbt sourceDistGenerate
+```
