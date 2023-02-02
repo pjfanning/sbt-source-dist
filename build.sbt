@@ -22,7 +22,8 @@ homepage := Some(url("https://github.com/pjfanning/sbt-source-dist"))
 licenses := Seq("APL2" -> url("https://www.apache.org/licenses/LICENSE-2.0.txt"))
 
 developers := List(
-  Developer(id="pjfanning", name="PJ Fanning", email="", url=url("https://github.com/pjfanning"))
+  Developer(id="pjfanning", name="PJ Fanning", email="", url=url("https://github.com/pjfanning")),
+  Developer(id="mdedetrich", name="Matthew de Detrich", email="", url=url("https://github.com/mdedetrich"))
 )
 
 ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec(Zulu, "8"))
