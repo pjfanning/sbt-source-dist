@@ -4,6 +4,8 @@ import java.io.File
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 
+import sbt.io.IO
+
 object Main extends App {
   val homeDirectory = "/Users/pj.fanning/code/incubator-pekko"
   val namePrefix = "incubator-pekko"
@@ -32,8 +34,9 @@ object Main extends App {
     val baseFileName = s"$prefix-src-$version-$dateString"
     val toZipFileName = s"$toFileDir/$baseFileName.zip"
     val toTgzFileName = s"$toFileDir/$baseFileName.tgz"
-    println(toZipFileName)
-    ZipUtils.zipFiles(toZipFileName, files, homeDir)
+    IO.zip(files.map{file =>
+      (file, removeBasePath(file.getAbsolutePath, homeDir))
+    }, new File(toZipFileName), None)
     TarUtils.tgzFiles(toTgzFileName, files, homeDir)
   }
 
