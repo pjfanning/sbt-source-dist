@@ -6,11 +6,8 @@ import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream
 import java.io.{BufferedOutputStream, File, FileInputStream, FileOutputStream, InputStream, OutputStream}
 
 object TarUtils {
-  def tgzFiles(tarFileName: String, filesToInclude: Seq[File], homeDir: String): Unit = {
-    val tarFile = new File(tarFileName)
-    new File(tarFileName).mkdirs()
-    if (tarFile.exists()) tarFile.delete()
-    val tarFileStream = new FileOutputStream(tarFileName)
+  def tgzFiles(tarFile: File, filesToInclude: Seq[File], homeDir: String): Unit = {
+    val tarFileStream = new FileOutputStream(tarFile)
     try {
       val buffOut = new BufferedOutputStream(tarFileStream)
       val gzOut = new GzipCompressorOutputStream(buffOut)
