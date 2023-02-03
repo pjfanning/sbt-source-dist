@@ -18,7 +18,8 @@ object SourceDistPlugin extends AutoPlugin {
       homeDir = sourceDistHomeDir.value.getAbsolutePath,
       prefix = sourceDistName.value,
       version = sourceDistVersion.value,
-      targetDir = sourceDistTargetDir.value.getAbsolutePath)
+      targetDir = sourceDistTargetDir.value.getAbsolutePath,
+      logger = streams.value.log)
   )
 
   override def projectSettings: Seq[Setting[_]] = sourceDistGlobalSettings

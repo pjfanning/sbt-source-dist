@@ -1,17 +1,19 @@
 package com.github.pjfanning.sourcedist
 
 import ignorelist._
+import sbt.internal.util.ManagedLogger
+
 import java.io.File
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
-
 import sbt.io.IO
 
 private[sourcedist] object SourceDistGenerate {
   private[sourcedist] def generateSourceDists(homeDir: String,
                                               prefix: String,
                                               version: String,
-                                              targetDir: String): Unit = {
+                                              targetDir: String,
+                                              logger: ManagedLogger): Unit = {
     val baseDir = new File(homeDir)
 
     val ignoreList = new IgnoreList(baseDir)
@@ -23,7 +25,6 @@ private[sourcedist] object SourceDistGenerate {
     customIgnorePatterns.add(".asf.yaml")
     ignoreList.addPatterns(customIgnorePatterns)
     val files = getIncludedFiles(baseDir, ignoreList)
-    //files.sortBy(_.getAbsolutePath).foreach(f => println(removeBasePath(f.getAbsolutePath, homeDir)))
 
     val dateTimeFormatter = DateTimeFormatter.BASIC_ISO_DATE
     val dateString = LocalDate.now().format(dateTimeFormatter)
@@ -31,9 +32,11 @@ private[sourcedist] object SourceDistGenerate {
     val toZipFileName = s"$targetDir/$baseFileName.zip"
     val toTgzFileName = s"$targetDir/$baseFileName.tgz"
 
+    logger.info(s"creating $toZipFileName")
     IO.zip(files.map { file =>
       (file, removeBasePath(file.getAbsolutePath, homeDir))
     }, new File(toZipFileName), None)
+    logger.info(s"creating $toTgzFileName")
     TarUtils.tgzFiles(toTgzFileName, files, homeDir)
   }
 
