@@ -29,25 +29,26 @@ private[sourcedist] object SourceDistGenerate {
     val dateTimeFormatter = DateTimeFormatter.BASIC_ISO_DATE
     val dateString = LocalDate.now().format(dateTimeFormatter)
     val baseFileName = s"$prefix-src-$version-$dateString"
-    val toZipFileName = new File(s"$targetDir/$baseFileName.zip")
-    val toTgzFileName = new File(s"$targetDir/$baseFileName.tgz")
+    IO.createDirectory(new File(targetDir))
+    val toZipFile = new File(s"$targetDir/$baseFileName.zip")
+    val toTgzFile = new File(s"$targetDir/$baseFileName.tgz")
 
-    if (toZipFileName.exists()) {
-      logger.info(s"Found previous zip artifact at $toZipFileName, recreating")
-      IO.delete(toZipFileName)
+    if (toZipFile.exists()) {
+      logger.info(s"Found previous zip artifact at ${toZipFile.getPath}, recreating")
+      IO.delete(toZipFile)
     } else
-      logger.info(s"Creating zip archive at ${toZipFileName.getPath}")
+      logger.info(s"Creating zip archive at ${toZipFile.getPath}")
 
     IO.zip(files.map { file =>
       (file, removeBasePath(file.getAbsolutePath, homeDir))
-    }, toZipFileName, None)
+    }, toZipFile, None)
 
-    if (toTgzFileName.exists()) {
-      logger.info(s"Found previous tgz archive at ${toTgzFileName.getPath}, recreating")
-      IO.delete(toTgzFileName)
+    if (toTgzFile.exists()) {
+      logger.info(s"Found previous tgz archive at ${toTgzFile.getPath}, recreating")
+      IO.delete(toTgzFile)
     } else
-      logger.info(s"Creating tar archive at ${toTgzFileName.getPath}")
-    TarUtils.tgzFiles(toTgzFileName, files, homeDir)
+      logger.info(s"Creating tar archive at ${toTgzFile.getPath}")
+    TarUtils.tgzFiles(toTgzFile, files, homeDir)
   }
 
   private def getIncludedFiles(dir: File, ignoreList: IgnoreList): Seq[File] = {
