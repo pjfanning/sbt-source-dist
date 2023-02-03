@@ -2,9 +2,8 @@ package com.github.pjfanning.sourcedist.ignorelist
 
 import org.apache.commons.compress.archivers.tar.{TarArchiveEntry, TarArchiveOutputStream}
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream
-import org.apache.commons.io.IOUtils
 
-import java.io.{BufferedOutputStream, File, FileInputStream, FileOutputStream}
+import java.io.{BufferedOutputStream, File, FileInputStream, FileOutputStream, InputStream, OutputStream}
 
 object TarUtils {
   def tgzFiles(tarFileName: String, filesToInclude: Seq[File], homeDir: String): Unit = {
@@ -14,7 +13,7 @@ object TarUtils {
     val tarFileStream = new FileOutputStream(tarFileName)
     try {
       val buffOut = new BufferedOutputStream(tarFileStream)
-      val gzOut = new GzipCompressorOutputStream(buffOut);
+      val gzOut = new GzipCompressorOutputStream(buffOut)
       val tos = new TarArchiveOutputStream(gzOut)
       tos.setLongFileMode(TarArchiveOutputStream.LONGFILE_POSIX)
       filesToInclude.sortBy(_.getAbsolutePath).foreach { f =>
@@ -24,9 +23,9 @@ object TarUtils {
         tos.putArchiveEntry(tarEntry)
         val fis = new FileInputStream(f)
         try {
-          IOUtils.copy(fis, tos)
+          copyLarge(fis, tos)
         } finally {
-          IOUtils.closeQuietly(fis)
+          fis.close()
         }
         tos.closeArchiveEntry()
       }
@@ -34,5 +33,17 @@ object TarUtils {
     } finally {
       tarFileStream.close()
     }
+  }
+
+  private def copyLarge(inputStream: InputStream, outputStream: OutputStream): Long = {
+    val buffer = new Array[Byte](8192)
+    var count = 0L
+    var n = inputStream.read(buffer)
+    while (n != -1) {
+      outputStream.write(buffer, 0, n)
+      count += n
+      n = inputStream.read(buffer)
+    }
+    count
   }
 }

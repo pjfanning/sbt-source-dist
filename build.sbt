@@ -11,8 +11,8 @@ javacOptions ++= Seq("-source", "1.8", "-target", "1.8")
 ThisBuild / scalaVersion := "2.12.17"
 
 libraryDependencies ++= Seq(
-  "commons-io" % "commons-io" % "2.11.0",
-  "org.apache.commons" % "commons-compress" % "1.22"
+  "org.apache.commons" % "commons-compress" % "1.22",
+  "org.scalatest" %% "scalatest" % "3.2.15" % Test
 )
 
 homepage := Some(url("https://github.com/pjfanning/sbt-source-dist"))

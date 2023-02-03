@@ -1,11 +1,11 @@
 package com.github.pjfanning.sourcedist
 
 import ignorelist._
-import sbt.internal.util.ManagedLogger
 
 import java.io.File
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import sbt.internal.util.ManagedLogger
 import sbt.io.IO
 
 private[sourcedist] object SourceDistGenerate {
