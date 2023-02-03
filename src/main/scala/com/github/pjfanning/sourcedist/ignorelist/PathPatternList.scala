@@ -47,11 +47,10 @@ class PathPatternList(private val basePath: String) {
     else patterns = patterns.+:(pattern)
   }
 
-  def findPattern(path: String, isDirectory: Boolean): Option[PathPattern] = {
+  def findPattern(path: String, isDirectory: Boolean): Option[PathPattern] =
     patterns.find { p =>
       p.matches(path, isDirectory, basePath)
     }
-  }
 
   override def toString: String = {
     val builder = new StringBuilder(getClass.getSimpleName)

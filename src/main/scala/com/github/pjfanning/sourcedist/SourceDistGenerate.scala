@@ -13,10 +13,11 @@ private[sourcedist] object SourceDistGenerate {
                                               prefix: String,
                                               version: String,
                                               targetDir: String,
-                                              logger: ManagedLogger): Unit = {
+                                              logger: ManagedLogger
+  ): Unit = {
     val baseDir = new File(homeDir)
 
-    val ignoreList = new IgnoreList(baseDir)
+    val ignoreList           = new IgnoreList(baseDir)
     val customIgnorePatterns = new PathPatternList("")
     customIgnorePatterns.add("target/")
     customIgnorePatterns.add(".git/")
@@ -27,10 +28,11 @@ private[sourcedist] object SourceDistGenerate {
     val files = getIncludedFiles(baseDir, ignoreList)
 
     val dateTimeFormatter = DateTimeFormatter.BASIC_ISO_DATE
-    val dateString = LocalDate.now().format(dateTimeFormatter)
-    val baseFileName = s"$prefix-src-$version-$dateString"
-    val targetDirFile = new File(targetDir)
-    if (!targetDirFile.exists()) IO.createDirectory(targetDirFile)
+    val dateString        = LocalDate.now().format(dateTimeFormatter)
+    val baseFileName      = s"$prefix-src-$version-$dateString"
+    val targetDirFile     = new File(targetDir)
+    if (!targetDirFile.exists())
+      IO.createDirectory(targetDirFile)
     val toZipFile = new File(targetDirFile, s"$baseFileName.zip")
     val toTgzFile = new File(targetDirFile, s"$baseFileName.tgz")
 
@@ -41,8 +43,11 @@ private[sourcedist] object SourceDistGenerate {
       logger.info(s"Creating zip archive at ${toZipFile.getPath}")
 
     IO.zip(files.map { file =>
-      (file, removeBasePath(file.getAbsolutePath, homeDir))
-    }, toZipFile, None)
+             (file, removeBasePath(file.getAbsolutePath, homeDir))
+           },
+           toZipFile,
+           None
+    )
 
     if (toTgzFile.exists()) {
       logger.info(s"Found previous tgz archive at ${toTgzFile.getPath}, recreating")

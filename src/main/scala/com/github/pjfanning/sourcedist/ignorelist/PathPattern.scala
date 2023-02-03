@@ -39,31 +39,29 @@
 package com.github.pjfanning.sourcedist.ignorelist
 
 object PathPattern {
-  def create(pattern: String): PathPattern = {
+  def create(pattern: String): PathPattern =
     if (hasNoWildcards(pattern, 0, pattern.length)) new PathPattern.NoWildcardPathPattern(pattern)
     else new PathPattern.WildcardPathPattern(pattern)
-  }
 
   private def isWildcard(c: Char) = c == '*' || c == '[' || c == '?' || c == '\\'
 
-  private def hasNoWildcards(pattern: String, from: Int, to: Int): Boolean = {
+  private def hasNoWildcards(pattern: String, from: Int, to: Int): Boolean =
     (from until to).collectFirst { case i =>
       !isWildcard(pattern.charAt(i))
     }.isEmpty
-  }
 
   private class NoWildcardPathPattern(pattern: String) extends PathPattern(pattern) {
-    override protected def matchesFileName(path: String): Boolean = {
+    override protected def matchesFileName(path: String): Boolean =
       if (path.length > pattern.length && path.charAt(path.length - pattern.length - 1) != '/') {
         false
       } else {
         path.endsWith(pattern)
       }
-    }
 
     override protected def matchesPathName(path: String, basePath: String): Boolean = {
-      val baseLength = if (basePath.length > 0) basePath.length + 1
-      else 0
+      val baseLength =
+        if (basePath.length > 0) basePath.length + 1
+        else 0
       path.length - baseLength == pattern.length && path.startsWith(pattern, baseLength)
     }
   }

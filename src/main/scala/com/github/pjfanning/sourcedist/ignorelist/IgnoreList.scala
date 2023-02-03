@@ -5,7 +5,7 @@ import scala.collection.mutable
 
 class IgnoreList(private val rootDir: File) {
   private val patternListCache = mutable.Map[File, PathPatternList]()
-  private val patternDefaults = mutable.Buffer[PathPatternList]()
+  private val patternDefaults  = mutable.Buffer[PathPatternList]()
   addPatterns(rootDir)
 
   def addPatterns(dir: File): IgnoreList = addPatterns(dir, "")
@@ -19,11 +19,11 @@ class IgnoreList(private val rootDir: File) {
   }
 
   def isExcluded(file: File): Boolean = {
-    val filePath = ExcludeUtils.getRelativePath(rootDir, file)
+    val filePath    = ExcludeUtils.getRelativePath(rootDir, file)
     val pathBuilder = new java.lang.StringBuilder(filePath.length)
-    val stack = patternDefaults.toIndexedSeq
-    var loop = true
-    var result = false
+    val stack       = patternDefaults.toIndexedSeq
+    var loop        = true
+    var result      = false
     while (loop) {
       val pathOffset = filePath.indexOf('/', pathBuilder.length + 1)
       val (offset, isDirectory) = if (pathOffset == -1) {
@@ -33,14 +33,13 @@ class IgnoreList(private val rootDir: File) {
       }
       pathBuilder.insert(pathBuilder.length, filePath, pathBuilder.length, offset)
       val currentPath = pathBuilder.toString
-      val iter = stack.reverseIterator
+      val iter        = stack.reverseIterator
       while (loop && iter.hasNext) {
         val patterns = iter.next()
         patterns.findPattern(currentPath, isDirectory) match {
-          case Some(pattern) => {
+          case Some(pattern) =>
             result = pattern.isExclude
             loop = false
-          }
           case _ =>
         }
       }
@@ -55,14 +54,12 @@ class IgnoreList(private val rootDir: File) {
   private def getDirectoryPattern(dir: File, dirPath: String): PathPatternList =
     getPatternList(new File(dir, GitIgnore.FILE_NAME), dirPath)
 
-  private def getPatternList(file: File, basePath: String): PathPatternList = {
+  private def getPatternList(file: File, basePath: String): PathPatternList =
     patternListCache.get(file) match {
       case Some(list) => list
-      case _ => {
+      case _ =>
         val list = ExcludeUtils.readExcludeFile(file, basePath)
         patternListCache.put(file, list)
         list
-      }
     }
-  }
 }

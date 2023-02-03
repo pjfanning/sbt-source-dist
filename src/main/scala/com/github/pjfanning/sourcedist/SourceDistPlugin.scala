@@ -10,16 +10,17 @@ object SourceDistPlugin extends AutoPlugin {
   import autoImport._
 
   def sourceDistGlobalSettings: Seq[Setting[_]] = Seq(
-    sourceDistHomeDir := baseDirectory.value,
+    sourceDistHomeDir   := baseDirectory.value,
     sourceDistTargetDir := target.value / "dist",
-    sourceDistVersion := version.value,
-    sourceDistName := name.value,
+    sourceDistVersion   := version.value,
+    sourceDistName      := name.value,
     sourceDistGenerate := SourceDistGenerate.generateSourceDists(
       homeDir = sourceDistHomeDir.value.getAbsolutePath,
       prefix = sourceDistName.value,
       version = sourceDistVersion.value,
       targetDir = sourceDistTargetDir.value.getAbsolutePath,
-      logger = streams.value.log)
+      logger = streams.value.log
+    )
   )
 
   override def projectSettings: Seq[Setting[_]] = sourceDistGlobalSettings
