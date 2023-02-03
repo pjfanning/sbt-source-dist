@@ -10,32 +10,30 @@ object TarUtils {
     val tarFileStream = new FileOutputStream(tarFile)
     try {
       val buffOut = new BufferedOutputStream(tarFileStream)
-      val gzOut = new GzipCompressorOutputStream(buffOut)
-      val tos = new TarArchiveOutputStream(gzOut)
+      val gzOut   = new GzipCompressorOutputStream(buffOut)
+      val tos     = new TarArchiveOutputStream(gzOut)
       tos.setLongFileMode(TarArchiveOutputStream.LONGFILE_POSIX)
       filesToInclude.sortBy(_.getAbsolutePath).foreach { f =>
         val truncatedFileName = removeBasePath(f.getAbsolutePath, homeDir)
-        val tarEntry = new TarArchiveEntry(truncatedFileName)
+        val tarEntry          = new TarArchiveEntry(truncatedFileName)
         tarEntry.setSize(f.length())
         tos.putArchiveEntry(tarEntry)
         val fis = new FileInputStream(f)
-        try {
+        try
           copyLarge(fis, tos)
-        } finally {
+        finally
           fis.close()
-        }
         tos.closeArchiveEntry()
       }
       tos.close()
-    } finally {
+    } finally
       tarFileStream.close()
-    }
   }
 
   private def copyLarge(inputStream: InputStream, outputStream: OutputStream): Long = {
     val buffer = new Array[Byte](8192)
-    var count = 0L
-    var n = inputStream.read(buffer)
+    var count  = 0L
+    var n      = inputStream.read(buffer)
     while (n != -1) {
       outputStream.write(buffer, 0, n)
       count += n

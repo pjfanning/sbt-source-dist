@@ -43,26 +43,24 @@ import java.io.{File, FileNotFoundException, IOException}
 import java.nio.charset.StandardCharsets
 
 private[ignorelist] object ExcludeUtils {
- def readExcludeFile(file: File, basePath: String): PathPatternList = {
+  def readExcludeFile(file: File, basePath: String): PathPatternList = {
     if (file == null) throw new NullPointerException("file is null")
     if (!file.exists || !file.canRead) throw new FileNotFoundException(s"Failed to find ${file.getAbsolutePath}")
     if (!file.canRead) throw new IOException(s"Cannot read ${file.getAbsolutePath}")
-    val src = Source.fromFile(file, StandardCharsets.UTF_8.name())
+    val src  = Source.fromFile(file, StandardCharsets.UTF_8.name())
     val list = new PathPatternList(basePath)
-    try {
-      for (line <- src.getLines) {
+    try
+      for (line <- src.getLines)
         if (line.nonEmpty && !line.startsWith("#")) {
           list.add(line)
         }
-      }
-    } finally {
+    finally
       src.close()
-    }
     list
   }
 
   def getRelativePath(wd: File, file: File): String = {
-    val skip = if (file.getPath.length > wd.getPath.length) 1 else 0
+    val skip    = if (file.getPath.length > wd.getPath.length) 1 else 0
     var relName = file.getPath.substring(wd.getPath.length + skip)
     if (File.separatorChar != '/') relName = relName.replace(File.separatorChar, '/')
     relName
