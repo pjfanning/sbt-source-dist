@@ -22,24 +22,34 @@ class IgnoreList(private val rootDir: File) {
     val filePath = ExcludeUtils.getRelativePath(rootDir, file)
     val pathBuilder = new java.lang.StringBuilder(filePath.length)
     val stack = patternDefaults.toIndexedSeq
-    while (true) {
-      var offset = filePath.indexOf('/', pathBuilder.length + 1)
-      var isDirectory = true
-      if (offset == -1) {
-        offset = filePath.length
-        isDirectory = file.isDirectory
+    var loop = true
+    var result = false
+    while (loop) {
+      val pathOffset = filePath.indexOf('/', pathBuilder.length + 1)
+      val (offset, isDirectory) = if (pathOffset == -1) {
+        (filePath.length, file.isDirectory)
+      } else {
+        (pathOffset, true)
       }
       pathBuilder.insert(pathBuilder.length, filePath, pathBuilder.length, offset)
       val currentPath = pathBuilder.toString
-      stack.reverse.map { patterns =>
+      val iter = stack.reverseIterator
+      while (loop && iter.hasNext) {
+        val patterns = iter.next()
         patterns.findPattern(currentPath, isDirectory) match {
-          case Some(pattern) => return pattern.isExclude
+          case Some(pattern) => {
+            result = pattern.isExclude
+            loop = false
+          }
           case _ =>
         }
       }
-      if (!isDirectory || pathBuilder.length >= filePath.length) return false
+      if (loop && (!isDirectory || pathBuilder.length >= filePath.length)) {
+        result = false
+        loop = false
+      }
     }
-    false
+    result
   }
 
   private def getDirectoryPattern(dir: File, dirPath: String): PathPatternList =
