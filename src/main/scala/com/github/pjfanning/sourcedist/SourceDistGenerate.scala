@@ -10,8 +10,8 @@ import sbt.io.IO
 private[sourcedist] object SourceDistGenerate {
   private[sourcedist] def generateSourceDists(homeDir: String,
                                               prefix: String,
-                                              targetDir: String,
-                                              version: String): Unit = {
+                                              version: String,
+                                              targetDir: String): Unit = {
     val baseDir = new File(homeDir)
 
     val ignoreList = new IgnoreList(baseDir)

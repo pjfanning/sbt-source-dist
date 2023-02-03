@@ -15,10 +15,10 @@ object SourceDistPlugin extends AutoPlugin {
     sourceDistVersion := version.value,
     sourceDistName := name.value,
     sourceDistGenerate := SourceDistGenerate.generateSourceDists(
-      sourceDistHomeDir.value.getAbsolutePath,
-      sourceDistName.value,
-      sourceDistVersion.value,
-      sourceDistTargetDir.value.getAbsolutePath)
+      homeDir = sourceDistHomeDir.value.getAbsolutePath,
+      prefix = sourceDistName.value,
+      version = sourceDistVersion.value,
+      targetDir = sourceDistTargetDir.value.getAbsolutePath)
   )
 
   override def projectSettings: Seq[Setting[_]] = sourceDistGlobalSettings
