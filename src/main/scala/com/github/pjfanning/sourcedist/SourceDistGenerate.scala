@@ -29,14 +29,25 @@ private[sourcedist] object SourceDistGenerate {
     val dateTimeFormatter = DateTimeFormatter.BASIC_ISO_DATE
     val dateString = LocalDate.now().format(dateTimeFormatter)
     val baseFileName = s"$prefix-src-$version-$dateString"
-    val toZipFileName = s"$targetDir/$baseFileName.zip"
-    val toTgzFileName = s"$targetDir/$baseFileName.tgz"
+    val toZipFileName = new File(s"$targetDir/$baseFileName.zip")
+    val toTgzFileName = new File(s"$targetDir/$baseFileName.tgz")
+    println(s"$targetDir/$baseFileName.tgz")
 
-    logger.info(s"creating $toZipFileName")
+    if (toZipFileName.exists()) {
+      logger.info(s"Found previous zip artifact at $toZipFileName, recreating")
+      IO.delete(toZipFileName)
+    } else
+      logger.info(s"Creating zip archive at ${toZipFileName.getPath}")
+
     IO.zip(files.map { file =>
       (file, removeBasePath(file.getAbsolutePath, homeDir))
-    }, new File(toZipFileName), None)
-    logger.info(s"creating $toTgzFileName")
+    }, toZipFileName, None)
+
+    if (toTgzFileName.exists()) {
+      logger.info(s"Found previous tgz archive at ${toTgzFileName.getPath}, recreating")
+      IO.delete(toTgzFileName)
+    } else
+      logger.info(s"Creating tar archive at ${toTgzFileName.getPath}")
     TarUtils.tgzFiles(toTgzFileName, files, homeDir)
   }
 
