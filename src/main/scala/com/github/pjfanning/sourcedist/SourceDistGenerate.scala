@@ -31,7 +31,6 @@ private[sourcedist] object SourceDistGenerate {
     val baseFileName = s"$prefix-src-$version-$dateString"
     val toZipFileName = new File(s"$targetDir/$baseFileName.zip")
     val toTgzFileName = new File(s"$targetDir/$baseFileName.tgz")
-    println(s"$targetDir/$baseFileName.tgz")
 
     if (toZipFileName.exists()) {
       logger.info(s"Found previous zip artifact at $toZipFileName, recreating")
