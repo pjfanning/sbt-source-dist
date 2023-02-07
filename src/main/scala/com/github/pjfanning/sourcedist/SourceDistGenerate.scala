@@ -3,8 +3,6 @@ package com.github.pjfanning.sourcedist
 import ignorelist._
 
 import java.io.File
-import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import sbt.internal.util.ManagedLogger
 import sbt.io.IO
 
@@ -13,6 +11,7 @@ private[sourcedist] object SourceDistGenerate {
                                               prefix: String,
                                               version: String,
                                               targetDir: String,
+                                              suffix: String,
                                               logger: ManagedLogger
   ): Unit = {
     val baseDir = new File(homeDir)
@@ -27,14 +26,13 @@ private[sourcedist] object SourceDistGenerate {
     ignoreList.addPatterns(customIgnorePatterns)
     val files = getIncludedFiles(baseDir, ignoreList)
 
-    val dateTimeFormatter = DateTimeFormatter.BASIC_ISO_DATE
-    val dateString        = LocalDate.now().format(dateTimeFormatter)
-    val baseFileName      = s"$prefix-src-$version-$dateString"
-    val targetDirFile     = new File(targetDir)
+    val baseFileName  = s"$prefix-src-$version"
+    val suffixedName  = if (suffix.nonEmpty) s"$baseFileName-$suffix" else baseFileName
+    val targetDirFile = new File(targetDir)
     if (!targetDirFile.exists())
       IO.createDirectory(targetDirFile)
-    val toZipFile = new File(targetDirFile, s"$baseFileName.zip")
-    val toTgzFile = new File(targetDirFile, s"$baseFileName.tgz")
+    val toZipFile = new File(targetDirFile, s"$suffixedName.zip")
+    val toTgzFile = new File(targetDirFile, s"$suffixedName.tgz")
 
     if (toZipFile.exists()) {
       logger.info(s"Found previous zip artifact at ${toZipFile.getPath}, recreating")
@@ -49,12 +47,18 @@ private[sourcedist] object SourceDistGenerate {
            None
     )
 
+    ShaUtils.writeShaDigest(toZipFile, 256)
+    ShaUtils.writeShaDigest(toZipFile, 512)
+
     if (toTgzFile.exists()) {
       logger.info(s"Found previous tgz archive at ${toTgzFile.getPath}, recreating")
       IO.delete(toTgzFile)
     } else
       logger.info(s"Creating tar archive at ${toTgzFile.getPath}")
     TarUtils.tgzFiles(toTgzFile, files, homeDir)
+
+    ShaUtils.writeShaDigest(toTgzFile, 256)
+    ShaUtils.writeShaDigest(toTgzFile, 512)
   }
 
   private def getIncludedFiles(dir: File, ignoreList: IgnoreList): Seq[File] = {
