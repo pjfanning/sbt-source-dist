@@ -3,21 +3,19 @@ package com.github.pjfanning.sourcedist.ignorelist
 import java.io.{File, FileInputStream, FileOutputStream, InputStream, OutputStreamWriter}
 import java.nio.charset.StandardCharsets
 import java.security.{DigestInputStream, MessageDigest}
-import java.util.Base64
 import scala.util.Using
 
 object ShaUtils {
   def writeShaDigest(file: File, keySize: Int): Unit = {
-    val truncatedFileName = dropDirectory(file.getAbsolutePath)
-    val digester          = MessageDigest.getInstance(s"SHA-$keySize")
+    val digester = MessageDigest.getInstance(s"SHA-$keySize")
     Using(new FileInputStream(file)) { fileStream =>
       Using(new DigestInputStream(fileStream, digester)) { digestStream =>
         digestStream.on(true)
         readStream(digestStream)
-        val base64Digest = Base64.getEncoder.encodeToString(digester.digest())
+        val hexDigest = convertBytesToHexadecimal(digester.digest())
         Using(new FileOutputStream(s"${file.getAbsolutePath}.sha$keySize")) { fos =>
           Using(new OutputStreamWriter(fos, StandardCharsets.UTF_8)) { writer =>
-            writer.append(s"$truncatedFileName $base64Digest")
+            writer.append(s"$hexDigest  ${file.getName}")
           }
         }
       }
@@ -34,12 +32,16 @@ object ShaUtils {
     }
   }
 
-  private def dropDirectory(fileName: String): String = {
-    val slashPos = fileName.lastIndexOf(System.lineSeparator())
-    if (slashPos != -1) {
-      fileName.substring(slashPos + 1)
-    } else {
-      fileName
+  private def convertBytesToHexadecimal(byteArray: Array[Byte]): String = {
+    val hexBuilder = new StringBuilder()
+    byteArray.foreach { b =>
+      val decimal: Int = b & 0xff
+      val hex: String  = Integer.toHexString(decimal)
+      if (hex.length % 2 == 1) { // if half hex, pad with zero, e.g \t
+        hexBuilder.append('0')
+      }
+      hexBuilder.append(hex)
     }
+    hexBuilder.toString()
   }
 }
