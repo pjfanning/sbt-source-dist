@@ -8,10 +8,10 @@ class IgnoreList(private val rootDir: File) {
   private val patternDefaults  = mutable.Buffer[PathPatternList]()
   addPatterns(rootDir)
 
-  def addPatterns(dir: File): IgnoreList = addPatterns(dir, "")
+  def addPatterns(dir: File): Unit = addPatterns(dir, "")
 
-  def addPatterns(dir: File, basePath: String): IgnoreList =
-    addPatterns(getDirectoryPattern(dir, basePath))
+  def addPatterns(dir: File, basePath: String): Unit =
+    getDirectoryPattern(dir, basePath).map(addPatterns)
 
   def addPatterns(patterns: PathPatternList): IgnoreList = {
     patternDefaults.append(patterns)
@@ -51,15 +51,21 @@ class IgnoreList(private val rootDir: File) {
     result
   }
 
-  private def getDirectoryPattern(dir: File, dirPath: String): PathPatternList =
+  private def getDirectoryPattern(dir: File, dirPath: String): Option[PathPatternList] =
     getPatternList(new File(dir, GitIgnore.FILE_NAME), dirPath)
 
-  private def getPatternList(file: File, basePath: String): PathPatternList =
+  private def getPatternList(file: File, basePath: String): Option[PathPatternList] = {
     patternListCache.get(file) match {
-      case Some(list) => list
-      case _ =>
-        val list = ExcludeUtils.readExcludeFile(file, basePath)
-        patternListCache.put(file, list)
-        list
+      case Some(list) => Some(list)
+      case _ => {
+        if (file.exists()) {
+          val list = ExcludeUtils.readExcludeFile(file, basePath)
+          patternListCache.put(file, list)
+          Some(list)
+        } else {
+          None
+        }
+      }
     }
+  }
 }
