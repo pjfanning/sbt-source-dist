@@ -7,9 +7,9 @@ import java.util.Base64
 import scala.util.Using
 
 object ShaUtils {
-  def writeShaDigest(file: File, homeDir: String, keySize: Int): Unit = {
-    val truncatedFileName = removeBasePath(file.getAbsolutePath, homeDir)
-    val digester = MessageDigest.getInstance(s"SHA-$keySize")
+  def writeShaDigest(file: File, keySize: Int): Unit = {
+    val truncatedFileName = dropDirectory(file.getAbsolutePath)
+    val digester          = MessageDigest.getInstance(s"SHA-$keySize")
     Using(new FileInputStream(file)) { fileStream =>
       Using(new DigestInputStream(fileStream, digester)) { digestStream =>
         digestStream.on(true)
@@ -26,12 +26,20 @@ object ShaUtils {
 
   private def readStream(inputStream: InputStream): Unit = {
     val buffer = new Array[Byte](8192)
-    var count = 0L
-    var n = inputStream.read(buffer)
+    var count  = 0L
+    var n      = inputStream.read(buffer)
     while (n != -1) {
       count += n
       n = inputStream.read(buffer)
     }
   }
 
+  private def dropDirectory(fileName: String): String = {
+    val slashPos = fileName.lastIndexOf(System.lineSeparator())
+    if (slashPos != -1) {
+      fileName.substring(slashPos + 1)
+    } else {
+      fileName
+    }
+  }
 }

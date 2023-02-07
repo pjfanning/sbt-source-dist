@@ -47,8 +47,8 @@ private[sourcedist] object SourceDistGenerate {
            None
     )
 
-    ShaUtils.writeShaDigest(toZipFile, homeDir, 256)
-    ShaUtils.writeShaDigest(toZipFile, homeDir, 512)
+    ShaUtils.writeShaDigest(toZipFile, 256)
+    ShaUtils.writeShaDigest(toZipFile, 512)
 
     if (toTgzFile.exists()) {
       logger.info(s"Found previous tgz archive at ${toTgzFile.getPath}, recreating")
@@ -57,8 +57,8 @@ private[sourcedist] object SourceDistGenerate {
       logger.info(s"Creating tar archive at ${toTgzFile.getPath}")
     TarUtils.tgzFiles(toTgzFile, files, homeDir)
 
-    ShaUtils.writeShaDigest(toTgzFile, homeDir, 256)
-    ShaUtils.writeShaDigest(toTgzFile, homeDir, 512)
+    ShaUtils.writeShaDigest(toTgzFile, 256)
+    ShaUtils.writeShaDigest(toTgzFile, 512)
   }
 
   private def getIncludedFiles(dir: File, ignoreList: IgnoreList): Seq[File] = {
