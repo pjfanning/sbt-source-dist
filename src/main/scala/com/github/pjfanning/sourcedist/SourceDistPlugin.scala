@@ -1,7 +1,7 @@
 package com.github.pjfanning.sourcedist
 
-import sbt.*
-import Keys.*
+import sbt._
+import Keys._
 import sbt.{AutoPlugin, Setting}
 
 import java.time.LocalDate
