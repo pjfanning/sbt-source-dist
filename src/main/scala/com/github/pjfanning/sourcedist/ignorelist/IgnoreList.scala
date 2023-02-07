@@ -54,10 +54,10 @@ class IgnoreList(private val rootDir: File) {
   private def getDirectoryPattern(dir: File, dirPath: String): Option[PathPatternList] =
     getPatternList(new File(dir, GitIgnore.FILE_NAME), dirPath)
 
-  private def getPatternList(file: File, basePath: String): Option[PathPatternList] = {
+  private def getPatternList(file: File, basePath: String): Option[PathPatternList] =
     patternListCache.get(file) match {
       case Some(list) => Some(list)
-      case _ => {
+      case _ =>
         if (file.exists()) {
           val list = ExcludeUtils.readExcludeFile(file, basePath)
           patternListCache.put(file, list)
@@ -65,7 +65,5 @@ class IgnoreList(private val rootDir: File) {
         } else {
           None
         }
-      }
     }
-  }
 }

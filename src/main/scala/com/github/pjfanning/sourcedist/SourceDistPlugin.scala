@@ -1,8 +1,11 @@
 package com.github.pjfanning.sourcedist
 
-import sbt._
-import Keys._
+import sbt.*
+import Keys.*
 import sbt.{AutoPlugin, Setting}
+
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 object SourceDistPlugin extends AutoPlugin {
   object autoImport extends SourceDistKeys
@@ -14,10 +17,12 @@ object SourceDistPlugin extends AutoPlugin {
     sourceDistTargetDir := target.value / "dist",
     sourceDistVersion   := version.value,
     sourceDistName      := name.value,
+    sourceDistSuffix    := LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE),
     sourceDistGenerate := SourceDistGenerate.generateSourceDists(
       homeDir = sourceDistHomeDir.value.getAbsolutePath,
       prefix = sourceDistName.value,
       version = sourceDistVersion.value,
+      suffix = sourceDistSuffix.value,
       targetDir = sourceDistTargetDir.value.getAbsolutePath,
       logger = streams.value.log
     )

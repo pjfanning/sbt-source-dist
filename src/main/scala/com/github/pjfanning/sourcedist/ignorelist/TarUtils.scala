@@ -4,30 +4,27 @@ import org.apache.commons.compress.archivers.tar.{TarArchiveEntry, TarArchiveOut
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream
 
 import java.io.{BufferedOutputStream, File, FileInputStream, FileOutputStream, InputStream, OutputStream}
+import scala.util.Using
 
 object TarUtils {
   def tgzFiles(tarFile: File, filesToInclude: Seq[File], homeDir: String): Unit = {
-    val tarFileStream = new FileOutputStream(tarFile)
-    try {
+    Using(new FileOutputStream(tarFile)) { tarFileStream =>
       val buffOut = new BufferedOutputStream(tarFileStream)
       val gzOut   = new GzipCompressorOutputStream(buffOut)
-      val tos     = new TarArchiveOutputStream(gzOut)
-      tos.setLongFileMode(TarArchiveOutputStream.LONGFILE_POSIX)
-      filesToInclude.sortBy(_.getAbsolutePath).foreach { f =>
-        val truncatedFileName = removeBasePath(f.getAbsolutePath, homeDir)
-        val tarEntry          = new TarArchiveEntry(truncatedFileName)
-        tarEntry.setSize(f.length())
-        tos.putArchiveEntry(tarEntry)
-        val fis = new FileInputStream(f)
-        try
-          copyLarge(fis, tos)
-        finally
-          fis.close()
-        tos.closeArchiveEntry()
+      Using(new TarArchiveOutputStream(gzOut)) { tos =>
+        tos.setLongFileMode(TarArchiveOutputStream.LONGFILE_POSIX)
+        filesToInclude.sortBy(_.getAbsolutePath).foreach { f =>
+          val truncatedFileName = removeBasePath(f.getAbsolutePath, homeDir)
+          val tarEntry = new TarArchiveEntry(truncatedFileName)
+          tarEntry.setSize(f.length())
+          tos.putArchiveEntry(tarEntry)
+          Using(new FileInputStream(f)) { fis =>
+            copyLarge(fis, tos)
+          }
+          tos.closeArchiveEntry()
+        }
       }
-      tos.close()
-    } finally
-      tarFileStream.close()
+    }
   }
 
   private def copyLarge(inputStream: InputStream, outputStream: OutputStream): Long = {
