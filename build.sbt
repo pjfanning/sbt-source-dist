@@ -7,6 +7,10 @@ description  := "sbt plugin to generate source distributions"
 sbtPlugin := true
 
 javacOptions ++= Seq("-source", "1.8", "-target", "1.8")
+scalacOptions ++= Seq(
+  "-opt:l:inline",
+  "-opt-inline-from:<sources>"
+)
 
 ThisBuild / scalaVersion := "2.12.17"
 
