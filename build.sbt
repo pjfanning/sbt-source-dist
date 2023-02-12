@@ -38,7 +38,9 @@ ThisBuild / githubWorkflowPublishTargetBranches := Seq(
   RefPredicate.Equals(Ref.Branch("main")),
   RefPredicate.StartsWith(Ref.Tag("v"))
 )
-ThisBuild / githubWorkflowBuild := Seq(WorkflowStep.Sbt(List("test", "scripted")))
+ThisBuild / githubWorkflowBuild := Seq(
+  WorkflowStep.Sbt(name = Some("Build project"), commands = List("test", "scripted"))
+)
 
 ThisBuild / githubWorkflowPublish := Seq(
   WorkflowStep.Sbt(
