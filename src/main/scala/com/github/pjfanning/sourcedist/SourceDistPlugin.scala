@@ -2,6 +2,7 @@ package com.github.pjfanning.sourcedist
 
 import sbt._
 import Keys._
+import com.github.sbt.git.SbtGit.git.gitUncommittedChanges
 import sbt.{AutoPlugin, Setting}
 
 import java.time.LocalDate
@@ -24,7 +25,8 @@ object SourceDistPlugin extends AutoPlugin {
       version = sourceDistVersion.value,
       suffix = sourceDistSuffix.value,
       targetDir = sourceDistTargetDir.value.getAbsolutePath,
-      logger = streams.value.log
+      logger = streams.value.log,
+      gitUncommittedChanges = gitUncommittedChanges.value
     )
   )
 
