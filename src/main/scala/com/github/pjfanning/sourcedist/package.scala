@@ -1,6 +1,6 @@
-package com.github.pjfanning.sourcedist
+package com.github.pjfanning
 
-package object ignorelist {
+package object sourcedist {
   private[sourcedist] def removeBasePath(fileName: String, basePath: String): String = {
     val truncated = if (fileName.startsWith(basePath)) {
       fileName.substring(basePath.length)
