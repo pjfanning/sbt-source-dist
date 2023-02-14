@@ -12,11 +12,11 @@ object SourceDistPlugin extends AutoPlugin {
 
   import autoImport._
 
-  def sourceDistGlobalSettings: Seq[Setting[_]] = Seq(
-    sourceDistHomeDir   := baseDirectory.value,
-    sourceDistTargetDir := target.value / "dist",
-    sourceDistVersion   := version.value,
-    sourceDistName      := name.value,
+  private[sourcedist] lazy val sourceDistSettings: Seq[Setting[_]] = Seq(
+    sourceDistHomeDir   := (LocalRootProject / baseDirectory).value,
+    sourceDistTargetDir := (LocalRootProject / target).value / "dist",
+    sourceDistVersion   := (LocalRootProject / version).value,
+    sourceDistName      := (LocalRootProject / name).value,
     sourceDistSuffix    := LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE),
     sourceDistGenerate := SourceDistGenerate.generateSourceDists(
       homeDir = sourceDistHomeDir.value.getAbsolutePath,
@@ -28,8 +28,8 @@ object SourceDistPlugin extends AutoPlugin {
     )
   )
 
-  override def projectSettings: Seq[Setting[_]] = sourceDistGlobalSettings
+  override lazy val projectSettings: Seq[Setting[_]] = sourceDistSettings
 
-  override def trigger = noTrigger
+  override def trigger = allRequirements
 
 }
