@@ -1,20 +1,20 @@
 package com.github.pjfanning.sourcedist
 
-import sbt.{File, settingKey, taskKey}
+import sbt.{File, SettingKey, TaskKey, settingKey, taskKey}
 
 trait SourceDistKeys {
-  val sourceDistHomeDir =
+  lazy val sourceDistHomeDir: SettingKey[File] =
     settingKey[File]("Home directory which contains the projects sources, defaults to project root directory")
-  val sourceDistTargetDir = settingKey[File](
+  lazy val sourceDistTargetDir: SettingKey[File] = settingKey[File](
     "Target directory where to create the archives, defaults dist folder under root project target folder"
   )
-  val sourceDistVersion =
+  lazy val sourceDistVersion: SettingKey[String] =
     settingKey[String]("The version to be used in the output archive file names, defaults to the root projects version")
-  val sourceDistName = settingKey[String](
+  lazy val sourceDistName: SettingKey[String] = settingKey[String](
     "The name to be used as the prefix in the output archive file names, defaults to root projects name"
   )
-  val sourceDistSuffix = settingKey[String](
+  lazy val sourceDistSuffix: TaskKey[String] = taskKey[String](
     "The suffix to be used in the output archive file names, defaults to today's date in YYMMDD format"
   )
-  val sourceDistGenerate = taskKey[Unit]("Generate the source distribution packages")
+  lazy val sourceDistGenerate: TaskKey[Unit] = taskKey[Unit]("Generate the source distribution packages")
 }
