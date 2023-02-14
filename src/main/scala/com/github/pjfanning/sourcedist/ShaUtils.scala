@@ -1,4 +1,4 @@
-package com.github.pjfanning.sourcedist.ignorelist
+package com.github.pjfanning.sourcedist
 
 import java.io.{File, FileInputStream, FileOutputStream, InputStream, OutputStreamWriter}
 import java.nio.charset.StandardCharsets
@@ -32,7 +32,7 @@ object ShaUtils {
     }
   }
 
-  private def convertBytesToHexadecimal(byteArray: Array[Byte]): String = {
+  private[sourcedist] def convertBytesToHexadecimal(byteArray: Array[Byte]): String = {
     val hexBuilder = new StringBuilder()
     byteArray.foreach { b =>
       val decimal: Int = b & 0xff

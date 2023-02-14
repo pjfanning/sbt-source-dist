@@ -1,4 +1,4 @@
-package com.github.pjfanning.sourcedist.ignorelist
+package com.github.pjfanning.sourcedist
 
 import org.apache.commons.compress.archivers.tar.{TarArchiveEntry, TarArchiveOutputStream}
 import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream
@@ -26,7 +26,7 @@ object TarUtils {
       }
     }
 
-  private def copyLarge(inputStream: InputStream, outputStream: OutputStream): Long = {
+  private[sourcedist] def copyLarge(inputStream: InputStream, outputStream: OutputStream): Long = {
     val buffer = new Array[Byte](8192)
     var count  = 0L
     var n      = inputStream.read(buffer)

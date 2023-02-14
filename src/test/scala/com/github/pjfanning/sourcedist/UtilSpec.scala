@@ -1,4 +1,4 @@
-package com.github.pjfanning.sourcedist.ignorelist
+package com.github.pjfanning.sourcedist
 
 import org.scalatest.flatspec.AnyFlatSpec
 import org.scalatest.matchers.must.Matchers

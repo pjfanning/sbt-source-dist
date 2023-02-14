@@ -36,7 +36,8 @@
  * pjfanning elects to include this software in this distribution
  * under the CDDL license.
  */
-package com.github.pjfanning.sourcedist.ignorelist
+package com.github.pjfanning.sourcedist
+package ignorelist
 
 object PathPattern {
   def create(pattern: String): PathPattern =

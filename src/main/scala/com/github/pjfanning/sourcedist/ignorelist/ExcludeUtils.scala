@@ -36,13 +36,14 @@
  * pjfanning elects to include this software in this distribution
  * under the CDDL license.
  */
-package com.github.pjfanning.sourcedist.ignorelist
+package com.github.pjfanning.sourcedist
+package ignorelist
 
 import scala.io.Source
 import java.io.{File, FileNotFoundException, IOException}
 import java.nio.charset.StandardCharsets
 
-private[ignorelist] object ExcludeUtils {
+private[sourcedist] object ExcludeUtils {
   def readExcludeFile(file: File, basePath: String): PathPatternList = {
     if (file == null) throw new NullPointerException("file is null")
     if (!file.exists || !file.canRead) throw new FileNotFoundException(s"Failed to find ${file.getAbsolutePath}")
