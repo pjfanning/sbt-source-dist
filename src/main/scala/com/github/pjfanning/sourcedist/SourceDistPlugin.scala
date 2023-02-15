@@ -13,22 +13,22 @@ object SourceDistPlugin extends AutoPlugin {
   import autoImport._
 
   private[sourcedist] lazy val sourceDistSettings: Seq[Setting[_]] = Seq(
-    sourceDistHomeDir   := (LocalRootProject / baseDirectory).value,
-    sourceDistTargetDir := (LocalRootProject / target).value / "dist",
-    sourceDistVersion   := (LocalRootProject / version).value,
-    sourceDistName      := (LocalRootProject / name).value,
-    sourceDistSuffix    := LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE),
-    sourceDistGenerate := SourceDistGenerate.generateSourceDists(
-      homeDir = sourceDistHomeDir.value.getAbsolutePath,
-      prefix = sourceDistName.value,
-      version = sourceDistVersion.value,
-      suffix = sourceDistSuffix.value,
-      targetDir = sourceDistTargetDir.value.getAbsolutePath,
+    LocalRootProject / sourceDistHomeDir   := (LocalRootProject / baseDirectory).value,
+    LocalRootProject / sourceDistTargetDir := (LocalRootProject / target).value / "dist",
+    LocalRootProject / sourceDistVersion   := (LocalRootProject / version).value,
+    LocalRootProject / sourceDistName      := (LocalRootProject / name).value,
+    LocalRootProject / sourceDistSuffix    := LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE),
+    LocalRootProject / sourceDistGenerate := SourceDistGenerate.generateSourceDists(
+      homeDir = (LocalRootProject / sourceDistHomeDir).value.getAbsolutePath,
+      prefix = (LocalRootProject / sourceDistName).value,
+      version = (LocalRootProject / sourceDistVersion).value,
+      suffix = (LocalRootProject / sourceDistSuffix).value,
+      targetDir = (LocalRootProject / sourceDistTargetDir).value.getAbsolutePath,
       logger = streams.value.log
     )
   )
 
-  override lazy val projectSettings: Seq[Setting[_]] = sourceDistSettings
+  override lazy val buildSettings: Seq[Setting[_]] = sourceDistSettings
 
   override def trigger = allRequirements
 
