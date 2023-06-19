@@ -7,7 +7,8 @@ import java.io.{BufferedOutputStream, File, FileInputStream, FileOutputStream, I
 import scala.util.Using
 
 object TarUtils {
-  def tgzFiles(tarFile: File, filesToInclude: Seq[File], homeDir: String): Unit =
+  def tgzFiles(tarFile: File, filesToInclude: Seq[File], homeDir: String): Unit = {
+    val rootDirName = FileUtils.getFileNameWithoutSuffix(tarFile)
     Using(new FileOutputStream(tarFile)) { tarFileStream =>
       val buffOut = new BufferedOutputStream(tarFileStream)
       val gzOut   = new GzipCompressorOutputStream(buffOut)
@@ -15,7 +16,7 @@ object TarUtils {
         tos.setLongFileMode(TarArchiveOutputStream.LONGFILE_POSIX)
         filesToInclude.sortBy(_.getAbsolutePath).foreach { f =>
           val truncatedFileName = removeBasePath(f.getAbsolutePath, homeDir)
-          val tarEntry          = new TarArchiveEntry(truncatedFileName)
+          val tarEntry          = new TarArchiveEntry(s"$rootDirName/$truncatedFileName")
           tarEntry.setSize(f.length())
           tos.putArchiveEntry(tarEntry)
           Using(new FileInputStream(f)) { fis =>
@@ -25,6 +26,7 @@ object TarUtils {
         }
       }
     }
+  }
 
   private[sourcedist] def copyLarge(inputStream: InputStream, outputStream: OutputStream): Long = {
     val buffer = new Array[Byte](8192)

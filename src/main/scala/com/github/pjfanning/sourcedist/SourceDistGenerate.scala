@@ -40,8 +40,10 @@ private[sourcedist] object SourceDistGenerate {
     } else
       logger.info(s"Creating zip archive at ${toZipFile.getPath}")
 
+    val rootDirName = FileUtils.getFileNameWithoutSuffix(toZipFile)
     IO.zip(files.map { file =>
-             (file, removeBasePath(file.getAbsolutePath, homeDir))
+             val truncatedFileName = removeBasePath(file.getAbsolutePath, homeDir)
+             (file, s"$rootDirName/$truncatedFileName")
            },
            toZipFile,
            None
