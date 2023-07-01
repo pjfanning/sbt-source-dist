@@ -1,7 +1,5 @@
 > sourceDistGenerate
 $ exists target/dist/apache-pekko-0.1.9-incubating-src-20230331.zip
-$ exists target/dist/apache-pekko-0.1.9-incubating-src-20230331.zip.sha256
 $ exists target/dist/apache-pekko-0.1.9-incubating-src-20230331.zip.sha512
 $ exists target/dist/apache-pekko-0.1.9-incubating-src-20230331.tgz
-$ exists target/dist/apache-pekko-0.1.9-incubating-src-20230331.tgz.sha256
 $ exists target/dist/apache-pekko-0.1.9-incubating-src-20230331.tgz.sha512
