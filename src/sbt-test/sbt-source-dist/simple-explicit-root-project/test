@@ -1,5 +1,5 @@
 > sourceDistGenerate
-$ exists target/dist/incubator-pekko-src-0.1.9-20230331.zip
-$ exists target/dist/incubator-pekko-src-0.1.9-20230331.zip.sha512
-$ exists target/dist/incubator-pekko-src-0.1.9-20230331.tgz
-$ exists target/dist/incubator-pekko-src-0.1.9-20230331.tgz.sha512
+$ exists target/dist/apache-pekko-0.1.9-src-20230331.zip
+$ exists target/dist/apache-pekko-0.1.9-src-20230331.zip.sha512
+$ exists target/dist/apache-pekko-0.1.9-src-20230331.tgz
+$ exists target/dist/apache-pekko-0.1.9-src-20230331.tgz.sha512

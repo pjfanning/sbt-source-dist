@@ -12,6 +12,7 @@ private[sourcedist] object SourceDistGenerate {
                                               version: String,
                                               targetDir: String,
                                               suffix: String,
+                                              incubating: Boolean,
                                               logger: ManagedLogger
   ): Unit = {
     val baseDir = new File(homeDir)
@@ -26,7 +27,8 @@ private[sourcedist] object SourceDistGenerate {
     ignoreList.addPatterns(customIgnorePatterns)
     val files = getIncludedFiles(baseDir, ignoreList)
 
-    val baseFileName  = s"$prefix-src-$version"
+    val versionString = if (incubating) s"$version-incubating" else version
+    val baseFileName  = s"$prefix-$versionString-src"
     val suffixedName  = if (suffix.nonEmpty) s"$baseFileName-$suffix" else baseFileName
     val targetDirFile = new File(targetDir)
     if (!targetDirFile.exists())

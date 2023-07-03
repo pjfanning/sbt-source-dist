@@ -13,6 +13,9 @@ trait SourceDistKeys {
   lazy val sourceDistName: SettingKey[String] = settingKey[String](
     "The name to be used as the prefix in the output archive file names, defaults to root projects name"
   )
+  lazy val sourceDistIncubating: SettingKey[Boolean] = settingKey[Boolean](
+    "Should 'incubating' appear in the output archive file names (required by Apache Incubator podlings)"
+  )
   lazy val sourceDistSuffix: TaskKey[String] = taskKey[String](
     "The suffix to be used in the output archive file names, defaults to today's date in YYMMDD format"
   )
