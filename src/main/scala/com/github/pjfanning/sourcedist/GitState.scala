@@ -10,7 +10,7 @@ import scala.collection.mutable
 import scala.util.Using
 
 class GitState(dir: File) {
-  private val lsDir  = dir.getAbsoluteFile
+  private val lsDir             = dir.getAbsoluteFile
   private lazy val gitDirOption = findGitDir(lsDir)
 
   def isUnderGitControl: Boolean = gitDirOption.nonEmpty
