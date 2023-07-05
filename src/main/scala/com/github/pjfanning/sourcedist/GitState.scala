@@ -9,10 +9,14 @@ import java.io.File
 import scala.collection.mutable
 import scala.util.Using
 
-object GitUtils {
-  def lsTree(dir: File): Seq[String] = {
-    val lsDir  = dir.getAbsoluteFile
-    val gitDir = findGitDir(lsDir)
+class GitState(dir: File) {
+  private val lsDir  = dir.getAbsoluteFile
+  private lazy val gitDirOption = findGitDir(lsDir)
+
+  def isUnderGitControl: Boolean = gitDirOption.nonEmpty
+
+  def lsTree(): Seq[String] = {
+    val gitDir = gitDirOption.getOrElse(throw new IllegalStateException("Failed to find .git dir"))
     val prefix = if (gitDir.getParentFile == null) {
       ""
     } else {
@@ -27,14 +31,14 @@ object GitUtils {
 
   // it is assumed that the `dir` file has an absolute path already
   // use dir.getAbsoluteFile if unsure
-  private def findGitDir(dir: File): File = {
+  private def findGitDir(dir: File): Option[File] = {
     val possibleGitDir = new File(dir, ".git")
     if (possibleGitDir.exists()) {
-      possibleGitDir
+      Some(possibleGitDir)
     } else if (dir.getParentFile != null) {
       findGitDir(dir.getParentFile)
     } else {
-      throw new IllegalStateException("Failed to find .git dir")
+      None
     }
   }
 

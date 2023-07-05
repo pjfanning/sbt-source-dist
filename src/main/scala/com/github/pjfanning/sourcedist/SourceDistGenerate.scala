@@ -16,20 +16,12 @@ private[sourcedist] object SourceDistGenerate {
                                               logger: ManagedLogger
   ): Unit = {
     val baseDir = new File(homeDir)
-
-    val ignoreList           = new IgnoreList(baseDir)
-    val customIgnorePatterns = new PathPatternList("")
-    customIgnorePatterns.add("target/")
-    customIgnorePatterns.add(".git/")
-    customIgnorePatterns.add(".github/")
-    customIgnorePatterns.add(".git*")
-    customIgnorePatterns.add(".bsp/")
-    customIgnorePatterns.add(".idea/")
-    customIgnorePatterns.add(".vscode/")
-    customIgnorePatterns.add(".DS_Store")
-    customIgnorePatterns.add(".asf.yaml")
-    ignoreList.addPatterns(customIgnorePatterns)
-    val files = getIncludedFiles(baseDir, ignoreList)
+    val gitState = new GitState(baseDir)
+    val files = if (gitState.isUnderGitControl) {
+      listGitFiles(gitState, baseDir)
+    } else {
+      listLocalFiles(baseDir)
+    }
 
     val versionString = if (incubating) s"$version-incubating" else version
     val baseFileName  = s"$prefix-$versionString-src"
@@ -66,6 +58,36 @@ private[sourcedist] object SourceDistGenerate {
 
     ShaUtils.writeShaDigest(toTgzFile, 512)
   }
+
+  private def listLocalFiles(baseDir: File): Seq[File] = {
+    val ignoreList = new IgnoreList(baseDir)
+    val customIgnorePatterns = new PathPatternList("")
+    customIgnorePatterns.add("target/")
+    customIgnorePatterns.add(".git/")
+    customIgnorePatterns.add(".github/")
+    customIgnorePatterns.add(".git*")
+    customIgnorePatterns.add(".bsp/")
+    customIgnorePatterns.add(".idea/")
+    customIgnorePatterns.add(".vscode/")
+    customIgnorePatterns.add(".DS_Store")
+    customIgnorePatterns.add(".asf.yaml")
+    ignoreList.addPatterns(customIgnorePatterns)
+    getIncludedFiles(baseDir, ignoreList)
+  }
+
+  private def listGitFiles(gitState: GitState, baseDir: File): Seq[File] = {
+    gitState.lsTree().flatMap { path =>
+      if (includeGitFile(path)) Some(new File(baseDir, path).getAbsoluteFile) else None
+    }
+  }
+
+  private def includeGitFile(path: String): Boolean = {
+    !path.startsWith(".git") &&
+      !path.startsWith(".bsp") &&
+      !path.startsWith(".asf") &&
+      !path.contains(".DS_Store")
+  }
+
 
   private def getIncludedFiles(dir: File, ignoreList: IgnoreList): Seq[File] = {
     val files = dir.listFiles().filterNot(ignoreList.isExcluded).toSeq
