@@ -12,11 +12,11 @@ scalacOptions ++= Seq(
   "-opt-inline-from:<sources>"
 )
 
-ThisBuild / scalaVersion := "2.12.17"
+ThisBuild / scalaVersion := "2.12.18"
 
 libraryDependencies ++= Seq(
-  "org.apache.commons" % "commons-compress" % "1.22",
-  "org.scalatest"     %% "scalatest"        % "3.2.15" % Test
+  "org.apache.commons" % "commons-compress" % "1.23.0",
+  "org.scalatest"     %% "scalatest"        % "3.2.16" % Test
 )
 
 homepage := Some(url("https://github.com/pjfanning/sbt-source-dist"))
