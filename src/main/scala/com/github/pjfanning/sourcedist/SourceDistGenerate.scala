@@ -26,6 +26,7 @@ private[sourcedist] object SourceDistGenerate {
     customIgnorePatterns.add(".bsp/")
     customIgnorePatterns.add(".idea/")
     customIgnorePatterns.add(".vscode/")
+    customIgnorePatterns.add(".DS_Store")
     customIgnorePatterns.add(".asf.yaml")
     ignoreList.addPatterns(customIgnorePatterns)
     val files = getIncludedFiles(baseDir, ignoreList)
