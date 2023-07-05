@@ -7,12 +7,12 @@ import org.eclipse.jgit.treewalk.TreeWalk
 
 import java.io.File
 import scala.collection.mutable
+import scala.util.Using
 
 object GitUtils {
   def lsTree(dir: File): Seq[String] = {
-    val lsDir      = dir.getAbsoluteFile
-    val gitDir     = findGitDir(lsDir)
-    val repository = new FileRepositoryBuilder().setGitDir(gitDir).readEnvironment.findGitDir.build
+    val lsDir  = dir.getAbsoluteFile
+    val gitDir = findGitDir(lsDir)
     val prefix = if (gitDir.getParentFile == null) {
       ""
     } else {
@@ -20,10 +20,9 @@ object GitUtils {
       val sep   = File.separator
       if (start.isEmpty) start else s"${removeStart(start, sep)}$sep"
     }
-    try
+    Using.resource(new FileRepositoryBuilder().setGitDir(gitDir).readEnvironment.findGitDir.build) { repository =>
       getRepositoryFileListing(repository, prefix)
-    finally
-      repository.close()
+    }
   }
 
   // it is assumed that the `dir` file has an absolute path already
