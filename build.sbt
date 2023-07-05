@@ -32,7 +32,7 @@ developers := List(
   )
 )
 
-ThisBuild / tlSonatypeUseLegacyHost := true
+ThisBuild / tlSonatypeUseLegacyHost    := true
 ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec(Temurin, "8"))
 ThisBuild / githubWorkflowBuild        := Seq(WorkflowStep.Sbt(List("test")))
 ThisBuild / githubWorkflowPublishTargetBranches := Seq(
