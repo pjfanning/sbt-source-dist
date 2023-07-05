@@ -1,5 +1,6 @@
 package com.github.pjfanning.sourcedist
 
+import org.eclipse.jgit.api.Git
 import org.eclipse.jgit.lib.Repository
 import org.eclipse.jgit.revwalk.RevWalk
 import org.eclipse.jgit.storage.file.FileRepositoryBuilder
@@ -15,8 +16,17 @@ class GitState(dir: File) {
 
   def isUnderGitControl: Boolean = gitDirOption.nonEmpty
 
+  def hasUncommittedChanges: Boolean = {
+    val gitDir = getGitDir()
+    Using.resource(createRepository(gitDir)) { repository =>
+      val git = new Git(repository)
+      val status = git.status().call()
+      status.hasUncommittedChanges
+    }
+  }
+
   def lsTree(): Seq[String] = {
-    val gitDir = gitDirOption.getOrElse(throw new IllegalStateException("Failed to find .git dir"))
+    val gitDir = getGitDir()
     val prefix = if (gitDir.getParentFile == null) {
       ""
     } else {
@@ -24,10 +34,16 @@ class GitState(dir: File) {
       val sep   = File.separator
       if (start.isEmpty) start else s"${removeStart(start, sep)}$sep"
     }
-    Using.resource(new FileRepositoryBuilder().setGitDir(gitDir).readEnvironment.findGitDir.build) { repository =>
+    Using.resource(createRepository(gitDir)) { repository =>
       getRepositoryFileListing(repository, prefix)
     }
   }
+
+  private def getGitDir(): File =
+    gitDirOption.getOrElse(throw new IllegalStateException("Failed to find .git dir"))
+
+  private def createRepository(gitDir: File) =
+    new FileRepositoryBuilder().setGitDir(gitDir).readEnvironment.findGitDir.build
 
   // it is assumed that the `dir` file has an absolute path already
   // use dir.getAbsoluteFile if unsure
