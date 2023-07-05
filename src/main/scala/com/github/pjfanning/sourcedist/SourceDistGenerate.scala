@@ -20,7 +20,8 @@ private[sourcedist] object SourceDistGenerate {
     val files = if (gitState.isUnderGitControl) {
       if (gitState.hasUncommittedChanges) {
         throw new IllegalStateException(
-          "Local Git Repository has uncommitted changes. Please revert of commit these changes before trying again.")
+          "Local Git Repository has uncommitted changes. Please revert or commit these changes before trying again."
+        )
       }
       listGitFiles(gitState, baseDir)
     } else {

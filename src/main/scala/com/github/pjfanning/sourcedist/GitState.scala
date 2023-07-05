@@ -19,7 +19,7 @@ class GitState(dir: File) {
   def hasUncommittedChanges: Boolean = {
     val gitDir = getGitDir()
     Using.resource(createRepository(gitDir)) { repository =>
-      val git = new Git(repository)
+      val git    = new Git(repository)
       val status = git.status().call()
       status.hasUncommittedChanges
     }
