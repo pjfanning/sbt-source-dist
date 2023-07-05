@@ -10,6 +10,7 @@ class GitUtilsSpec extends AnyFlatSpec with Matchers {
     val seq = GitUtils.lsTree(new File("."))
     seq must contain("README.md")
     seq must contain(".github/workflows/ci.yml")
+    seq.filter(_.startsWith("target")) mustBe empty
   }
   it must "support lsTree on subdir" in {
     val seq = GitUtils.lsTree(new File(".github"))
