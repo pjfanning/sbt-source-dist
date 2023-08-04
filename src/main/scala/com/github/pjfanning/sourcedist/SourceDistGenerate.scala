@@ -34,26 +34,8 @@ private[sourcedist] object SourceDistGenerate {
     val targetDirFile = new File(targetDir)
     if (!targetDirFile.exists())
       IO.createDirectory(targetDirFile)
-    val toZipFile = new File(targetDirFile, s"$suffixedName.zip")
+
     val toTgzFile = new File(targetDirFile, s"$suffixedName.tgz")
-
-    if (toZipFile.exists()) {
-      logger.info(s"Found previous zip artifact at ${toZipFile.getPath}, recreating")
-      IO.delete(toZipFile)
-    } else
-      logger.info(s"Creating zip archive at ${toZipFile.getPath}")
-
-    val rootDirName = FileUtils.getFileNameWithoutSuffix(toZipFile)
-    IO.zip(files.map { file =>
-             val truncatedFileName = removeBasePath(file.getAbsolutePath, homeDir)
-             (file, s"$rootDirName/$truncatedFileName")
-           },
-           toZipFile,
-           None
-    )
-
-    ShaUtils.writeShaDigest(toZipFile, 512)
-
     if (toTgzFile.exists()) {
       logger.info(s"Found previous tgz archive at ${toTgzFile.getPath}, recreating")
       IO.delete(toTgzFile)
