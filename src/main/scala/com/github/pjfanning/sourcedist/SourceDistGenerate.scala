@@ -14,7 +14,7 @@ private[sourcedist] object SourceDistGenerate {
                                               suffix: String,
                                               incubating: Boolean,
                                               logger: ManagedLogger
-  ): Unit = {
+  ): GeneratedDist = {
     val baseDir  = new File(homeDir)
     val gitState = new GitState(baseDir)
     val files = if (gitState.isUnderGitControl) {
@@ -42,8 +42,7 @@ private[sourcedist] object SourceDistGenerate {
     } else
       logger.info(s"Creating tar archive at ${toTgzFile.getPath}")
     TarUtils.tgzFiles(toTgzFile, files, homeDir)
-
-    ShaUtils.writeShaDigest(toTgzFile, 512)
+    GeneratedDist(toTgzFile, ShaUtils.writeShaDigest(toTgzFile, 512))
   }
 
   private def listLocalFiles(baseDir: File): Seq[File] = {

@@ -20,6 +20,8 @@ libraryDependencies ++= Seq(
   "org.scalatest"     %% "scalatest"        % "3.2.17" % Test
 )
 
+addSbtPlugin("com.github.sbt" % "sbt-pgp" % "2.2.1")
+
 homepage := Some(url("https://github.com/pjfanning/sbt-source-dist"))
 
 licenses := Seq("APL2" -> url("https://www.apache.org/licenses/LICENSE-2.0.txt"))
@@ -42,6 +44,13 @@ ThisBuild / githubWorkflowPublishTargetBranches := Seq(
 )
 ThisBuild / githubWorkflowBuild := Seq(
   WorkflowStep.Sbt(name = Some("Build project"), commands = List("test", "scripted"))
+)
+
+ThisBuild / githubWorkflowBuildPreamble := Seq(
+  WorkflowStep.Run(
+    commands = List("gpg --import test-key.gpg"),
+    name = Some("Setup key")
+  )
 )
 
 ThisBuild / githubWorkflowPublish := Seq(

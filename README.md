@@ -34,3 +34,18 @@ You can then generate the source distribution using
 ```
 sbt sourceDistGenerate
 ```
+
+sbt-source-dist also supports signing the final generated source distribution
+using [sbt-pgp](https://github.com/sbt/sbt-pgp). Signing the source
+distribution in this manner has the added advantage of ensuring that the same
+signing key that is used to sign binary maven artifacts is also used for the
+source dist.
+
+You can both generate the source distribution and then sign it using
+
+```
+sbt signedSourceDistGenerate
+```
+
+`signedSourceDistGenerate` will re-use the same settings provided by sbt-pgp
+so if you need to configure it follow the instructions at https://github.com/sbt/sbt-pgp#usage.

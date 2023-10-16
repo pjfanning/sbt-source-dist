@@ -1,6 +1,6 @@
 package com.github.pjfanning.sourcedist
 
-import sbt.{File, SettingKey, TaskKey, settingKey, taskKey}
+import sbt.{Artifact, File, SettingKey, TaskKey, settingKey, taskKey}
 
 trait SourceDistKeys {
   lazy val sourceDistHomeDir: SettingKey[File] =
@@ -19,5 +19,9 @@ trait SourceDistKeys {
   lazy val sourceDistSuffix: SettingKey[String] = settingKey[String](
     "The suffix to be used in the output archive file names, defaults to today's date in YYMMDD format"
   )
-  lazy val sourceDistGenerate: TaskKey[Unit] = taskKey[Unit]("Generate the source distribution packages")
+  lazy val signedSourceDistGenerate: TaskKey[Option[SignedGeneratedDist]] = taskKey[Option[SignedGeneratedDist]](
+    "Signs the source distribution and provides a mapping of files their respective detached signatures"
+  )
+  lazy val sourceDistGenerate: TaskKey[GeneratedDist] =
+    taskKey[GeneratedDist]("Generate the source distribution packages")
 }
