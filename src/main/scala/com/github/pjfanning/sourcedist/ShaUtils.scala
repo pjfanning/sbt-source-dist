@@ -3,22 +3,27 @@ package com.github.pjfanning.sourcedist
 import java.io.{File, FileInputStream, FileOutputStream, InputStream, OutputStreamWriter}
 import java.nio.charset.StandardCharsets
 import java.security.{DigestInputStream, MessageDigest}
-import scala.util.Using
+import scala.util.{Failure, Success, Using}
 
 object ShaUtils {
-  def writeShaDigest(file: File, keySize: Int): Unit = {
+  def writeShaDigest(file: File, keySize: Int): File = {
     val digester = MessageDigest.getInstance(s"SHA-$keySize")
     Using(new FileInputStream(file)) { fileStream =>
       Using(new DigestInputStream(fileStream, digester)) { digestStream =>
         digestStream.on(true)
         readStream(digestStream)
-        val hexDigest = convertBytesToHexadecimal(digester.digest())
-        Using(new FileOutputStream(s"${file.getAbsolutePath}.sha$keySize")) { fos =>
+        val hexDigest      = convertBytesToHexadecimal(digester.digest())
+        val outputFileName = new File(s"${file.getAbsolutePath}.sha$keySize")
+        Using(new FileOutputStream(outputFileName)) { fos =>
           Using(new OutputStreamWriter(fos, StandardCharsets.UTF_8)) { writer =>
             writer.append(s"$hexDigest  ${file.getName}")
           }
         }
+        outputFileName
       }
+    }.flatten match {
+      case Failure(exception) => throw exception
+      case Success(value)     => value
     }
   }
 
