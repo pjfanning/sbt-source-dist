@@ -1,5 +1,3 @@
-import org.typelevel.sbt.gha.JavaSpec.Distribution.Temurin
-
 name         := "sbt-source-dist"
 organization := "com.github.pjfanning"
 description  := "sbt plugin to generate source distributions"
@@ -35,13 +33,13 @@ developers := List(
   )
 )
 
-ThisBuild / tlSonatypeUseLegacyHost    := true
-ThisBuild / githubWorkflowJavaVersions := Seq(JavaSpec(Temurin, "8"))
-ThisBuild / githubWorkflowBuild        := Seq(WorkflowStep.Sbt(List("test")))
-ThisBuild / githubWorkflowPublishTargetBranches := Seq(
-  RefPredicate.Equals(Ref.Branch("main")),
-  RefPredicate.StartsWith(Ref.Tag("v"))
-)
+ThisBuild / githubWorkflowBuild := Seq(WorkflowStep.Sbt(List("test")))
+ThisBuild / githubWorkflowTargetTags ++= Seq("v*")
+ThisBuild / githubWorkflowPublishTargetBranches :=
+  Seq(
+    RefPredicate.Equals(Ref.Branch("main")),
+    RefPredicate.StartsWith(Ref.Tag("v"))
+  )
 ThisBuild / githubWorkflowBuild := Seq(
   WorkflowStep.Sbt(name = Some("Build project"), commands = List("test", "scripted"))
 )
