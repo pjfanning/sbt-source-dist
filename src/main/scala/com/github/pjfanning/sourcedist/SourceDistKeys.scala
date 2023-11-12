@@ -1,6 +1,6 @@
 package com.github.pjfanning.sourcedist
 
-import sbt.{Artifact, File, SettingKey, TaskKey, settingKey, taskKey}
+import sbt.{File, SettingKey, TaskKey, settingKey, taskKey}
 
 trait SourceDistKeys {
   lazy val sourceDistHomeDir: SettingKey[File] =
