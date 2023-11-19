@@ -14,7 +14,7 @@ ThisBuild / scalaVersion := "2.12.18"
 
 libraryDependencies ++= Seq(
   "org.eclipse.jgit"   % "org.eclipse.jgit" % "5.13.2.202306221912-r",
-  "org.apache.commons" % "commons-compress" % "1.24.0",
+  "org.apache.commons" % "commons-compress" % "1.25.0",
   "org.scalatest"     %% "scalatest"        % "3.2.17" % Test
 )
 
