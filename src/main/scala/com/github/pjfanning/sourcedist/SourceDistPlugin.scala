@@ -45,10 +45,10 @@ object SourceDistPlugin extends AutoPlugin {
     )
   )
 
-  override def requires = SbtPgp
+  override lazy val requires = SbtPgp
 
   override lazy val buildSettings: Seq[Setting[_]] = sourceDistSettings
 
-  override def trigger = allRequirements
+  override lazy val trigger = allRequirements
 
 }
