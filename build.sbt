@@ -5,10 +5,26 @@ description  := "sbt plugin to generate source distributions"
 sbtPlugin := true
 
 javacOptions ++= Seq("-source", "1.8", "-target", "1.8")
-scalacOptions ++= Seq(
-  "-opt:l:inline",
-  "-opt-inline-from:<sources>"
+
+// compile settings
+scalacOptions ++= List(
+  "-unchecked",
+  "-deprecation",
+  "-language:_",
+  "-encoding",
+  "UTF-8"
 )
+
+scalacOptions ++= {
+  if (insideCI.value) {
+    val log = sLog.value
+    log.info("Running in CI, enabling Scala2 optimizer")
+    Seq(
+      "-opt-inline-from:<sources>",
+      "-opt:l:inline"
+    )
+  } else Nil
+}
 
 ThisBuild / scalaVersion := "2.12.18"
 
