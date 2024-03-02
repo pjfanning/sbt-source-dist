@@ -2,7 +2,7 @@ package com.github.pjfanning.sourcedist
 
 import sbt._
 import sbt.Keys._
-import com.jsuereth.sbtpgp.PgpKeys.pgpSigner
+import com.jsuereth.sbtpgp.PgpKeys.{pgpSigner, pgpSigningKey}
 import com.jsuereth.sbtpgp.{SbtPgp, gpgExtension}
 
 import java.time.LocalDate
@@ -26,6 +26,10 @@ object SourceDistPlugin extends AutoPlugin {
       val skipZ               = (pgpSigner / skip).value
       val s                   = streams.value
       if (!skipZ) {
+        pgpSigningKey.value match {
+          case Some(customKey) => s.log.info(s"Signing source distribution using custom key: $customKey")
+          case None            => s.log.info(s"Signing source distribution using default gpg key")
+        }
         Some(
           sourceDistGenerated.toSignedGeneratedDist(
             r.sign(sourceDistGenerated.dist, new File(sourceDistGenerated.dist + gpgExtension), s)
