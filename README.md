@@ -1,7 +1,7 @@
 # sbt-source-dist
 
-An snt plugin to produce source distributions for
-[Apache Pekko](https://github.com/apache/incubator-pekko).
+An sbt plugin to produce source distributions for
+[Apache Pekko](https://github.com/apache/pekko).
 
 * Outputs to target/dist directory of the root project
 
