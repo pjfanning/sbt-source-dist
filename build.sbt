@@ -46,7 +46,7 @@ scalacOptions ++= {
 ThisBuild / scalaVersion := "2.12.20"
 
 libraryDependencies ++= Seq(
-  "org.eclipse.jgit"   % "org.eclipse.jgit" % "5.13.4.202507202350-r",
+  "org.eclipse.jgit"   % "org.eclipse.jgit" % "5.13.3.202401111512-r",
   "org.apache.commons" % "commons-compress" % "1.28.0",
   "org.scalatest"     %% "scalatest"        % "3.2.19" % Test
 )

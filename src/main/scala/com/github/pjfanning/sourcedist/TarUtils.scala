@@ -22,7 +22,7 @@ import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream
 
 import java.io.{BufferedOutputStream, File, FileInputStream, FileOutputStream, InputStream, OutputStream}
 import java.nio.file.attribute.FileTime
-import java.time.{ZoneId, ZoneOffset}
+import java.time.ZoneOffset
 import scala.util.Using
 
 object TarUtils {
