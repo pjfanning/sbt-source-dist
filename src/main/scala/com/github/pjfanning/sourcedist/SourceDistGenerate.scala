@@ -20,8 +20,10 @@ package com.github.pjfanning.sourcedist
 import ignorelist._
 
 import java.io.File
+import java.time.ZoneOffset
 import sbt.internal.util.ManagedLogger
 import sbt.io.IO
+
 
 private[sourcedist] object SourceDistGenerate {
   private[sourcedist] def generateSourceDists(homeDir: String,
@@ -56,8 +58,10 @@ private[sourcedist] object SourceDistGenerate {
     if (toTgzFile.exists()) {
       logger.info(s"Found previous tgz archive at ${toTgzFile.getPath}, recreating")
       IO.delete(toTgzFile)
-    } else
+    } else {
       logger.info(s"Creating tar archive at ${toTgzFile.getPath}")
+      logger.info(s"Using SOURCE_DATE_EPOCH=${TarUtils.fileTimeLong} ${TarUtils.fileTime.toInstant.atOffset(ZoneOffset.UTC)}")
+    }
     TarUtils.tgzFiles(toTgzFile, files, homeDir)
     GeneratedDist(toTgzFile, ShaUtils.writeShaDigest(toTgzFile, 512))
   }

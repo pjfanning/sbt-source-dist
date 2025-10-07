@@ -22,28 +22,25 @@ import org.apache.commons.compress.compressors.gzip.GzipCompressorOutputStream
 
 import java.io.{BufferedOutputStream, File, FileInputStream, FileOutputStream, InputStream, OutputStream}
 import java.nio.file.attribute.FileTime
-import java.time.ZoneOffset
 import scala.util.Using
 
 object TarUtils {
-  val fileTime = {
-    System.getenv("SOURCE_DATE_EPOCH") match {
-      case null => FileTime.fromMillis(0)
-      case v =>
-        // the 1000 multiplier is to convert seconds to milliseconds
-        // https://reproducible-builds.org/docs/source-date-epoch/
-        try FileTime.fromMillis(v.toLong * 1000)
-        catch {
-          case _: NumberFormatException =>
-            throw new IllegalArgumentException(
-              s"Invalid SOURCE_DATE_EPOCH value: '$v'. It must be a valid integer."
-            )
-        }
-    }
+  val fileTimeLong = System.getenv("SOURCE_DATE_EPOCH") match {
+    case null => 0
+    case v =>
+      try v.toLong
+      catch {
+        case _: NumberFormatException =>
+          throw new IllegalArgumentException(
+            s"Invalid SOURCE_DATE_EPOCH value: '$v'. It must be a valid long."
+          )
+      }
   }
+  // the 1000 multiplier is to convert seconds to milliseconds
+  // https://reproducible-builds.org/docs/source-date-epoch/
+  val fileTime = FileTime.fromMillis(fileTimeLong * 1000)
 
   def tgzFiles(tarFile: File, filesToInclude: Seq[File], homeDir: String): Unit = {
-    println(s"Creating tgz archive with SOURCE_DATE_EPOCH=${fileTime.toInstant.atOffset(ZoneOffset.UTC)}")
     val rootDirName = FileUtils.getFileNameWithoutSuffix(tarFile)
     Using(new FileOutputStream(tarFile)) { tarFileStream =>
       val buffOut = new BufferedOutputStream(tarFileStream)
