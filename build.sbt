@@ -46,12 +46,12 @@ scalacOptions ++= {
 ThisBuild / scalaVersion := "2.12.20"
 
 libraryDependencies ++= Seq(
-  "org.eclipse.jgit"   % "org.eclipse.jgit" % "5.13.3.202401111512-r",
-  "org.apache.commons" % "commons-compress" % "1.27.1",
+  "org.eclipse.jgit"   % "org.eclipse.jgit" % "5.13.4.202507202350-r",
+  "org.apache.commons" % "commons-compress" % "1.28.0",
   "org.scalatest"     %% "scalatest"        % "3.2.19" % Test
 )
 
-addSbtPlugin("com.github.sbt" % "sbt-pgp" % "2.3.0")
+addSbtPlugin("com.github.sbt" % "sbt-pgp" % "2.3.1")
 
 homepage := Some(url("https://github.com/pjfanning/sbt-source-dist"))
 
