@@ -4,6 +4,7 @@ An sbt plugin to produce source distributions for
 [Apache Pekko](https://github.com/apache/pekko).
 
 * Outputs to target/dist directory of the root project
+* Since v0.1.13, we support [SOURCE_DATE_EPOCH](https://reproducible-builds.org/docs/source-date-epoch/) where the file times for the files inside the generated tar archive are set based on the environment variable (SOURCE_DATE_EPOCH). This is for reproducible build purposes. The value is the number of seconds since the start of 1970-01-01. Defaults to zero.
 
 ## sbt plugin
 
