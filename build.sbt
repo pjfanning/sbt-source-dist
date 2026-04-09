@@ -46,9 +46,9 @@ scalacOptions ++= {
 ThisBuild / scalaVersion := "2.12.21"
 
 libraryDependencies ++= Seq(
-  "org.eclipse.jgit"   % "org.eclipse.jgit" % "5.13.3.202401111512-r",
+  "org.eclipse.jgit"   % "org.eclipse.jgit" % "5.13.5.202508271544-r",
   "org.apache.commons" % "commons-compress" % "1.28.0",
-  "org.scalatest"     %% "scalatest"        % "3.2.19" % Test
+  "org.scalatest"     %% "scalatest"        % "3.2.20" % Test
 )
 
 addSbtPlugin("com.github.sbt" % "sbt-pgp" % "2.3.1")
