@@ -43,7 +43,7 @@ scalacOptions ++= {
   } else Nil
 }
 
-ThisBuild / scalaVersion := "2.12.20"
+ThisBuild / scalaVersion := "2.12.21"
 
 libraryDependencies ++= Seq(
   "org.eclipse.jgit"   % "org.eclipse.jgit" % "5.13.3.202401111512-r",
