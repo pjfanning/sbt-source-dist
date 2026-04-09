@@ -19,6 +19,7 @@ package com.github.pjfanning.sourcedist
 
 import sbt._
 import sbt.Keys._
+import sbtcompat.PluginCompat._
 import com.jsuereth.sbtpgp.PgpKeys.{pgpSigner, pgpSigningKey}
 import com.jsuereth.sbtpgp.{SbtPgp, gpgExtension}
 
@@ -37,7 +38,7 @@ object SourceDistPlugin extends AutoPlugin {
     LocalRootProject / sourceDistName       := (LocalRootProject / name).value,
     LocalRootProject / sourceDistSuffix     := LocalDate.now().format(DateTimeFormatter.BASIC_ISO_DATE),
     LocalRootProject / sourceDistIncubating := false,
-    LocalRootProject / signedSourceDistGenerate := {
+    LocalRootProject / signedSourceDistGenerate := Def.uncached {
       val sourceDistGenerated = (LocalRootProject / sourceDistGenerate).value
       val r                   = pgpSigner.value
       val skipZ               = (pgpSigner / skip).value
@@ -47,23 +48,26 @@ object SourceDistPlugin extends AutoPlugin {
           case Some(customKey) => s.log.info(s"Signing source distribution using custom key: $customKey")
           case None            => s.log.info(s"Signing source distribution using default gpg key")
         }
+        val gpgFile = new File(sourceDistGenerated.dist.getParent(), sourceDistGenerated.dist.getName() + gpgExtension)
         Some(
           sourceDistGenerated.toSignedGeneratedDist(
-            r.sign(sourceDistGenerated.dist, new File(sourceDistGenerated.dist + gpgExtension), s)
+            r.sign(sourceDistGenerated.dist, gpgFile, s)
           )
         )
       } else
         None
     },
-    LocalRootProject / sourceDistGenerate := SourceDistGenerate.generateSourceDists(
-      homeDir = (LocalRootProject / sourceDistHomeDir).value.getAbsolutePath,
-      prefix = (LocalRootProject / sourceDistName).value,
-      version = (LocalRootProject / sourceDistVersion).value,
-      suffix = (LocalRootProject / sourceDistSuffix).value,
-      targetDir = (LocalRootProject / sourceDistTargetDir).value.getAbsolutePath,
-      incubating = (LocalRootProject / sourceDistIncubating).value,
-      logger = streams.value.log
-    )
+    LocalRootProject / sourceDistGenerate := Def.uncached {
+      SourceDistGenerate.generateSourceDists(
+        homeDir = (LocalRootProject / sourceDistHomeDir).value.getAbsolutePath,
+        prefix = (LocalRootProject / sourceDistName).value,
+        version = (LocalRootProject / sourceDistVersion).value,
+        suffix = (LocalRootProject / sourceDistSuffix).value,
+        targetDir = (LocalRootProject / sourceDistTargetDir).value.getAbsolutePath,
+        incubating = (LocalRootProject / sourceDistIncubating).value,
+        logger = streams.value.log
+      )
+    }
   )
 
   override lazy val requires = SbtPgp

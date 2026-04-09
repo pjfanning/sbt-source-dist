@@ -24,13 +24,18 @@ sbtPlugin := true
 javacOptions ++= Seq("-source", "1.8", "-target", "1.8")
 
 // compile settings
-scalacOptions ++= List(
-  "-unchecked",
-  "-deprecation",
-  "-language:_",
-  "-encoding",
-  "UTF-8"
-)
+scalacOptions ++=
+  List(
+    "-unchecked",
+    "-deprecation",
+    "-encoding",
+    "UTF-8"
+  ) ++ {
+    scalaBinaryVersion.value match {
+      case "2.12" => List("-language:_")
+      case _      => List.empty
+    }
+  }
 
 scalacOptions ++= {
   if (insideCI.value) {
@@ -43,7 +48,17 @@ scalacOptions ++= {
   } else Nil
 }
 
-ThisBuild / scalaVersion := "2.12.21"
+val scala212 = "2.12.21"
+val scala3   = "3.8.2"
+ThisBuild / scalaVersion       := scala212
+ThisBuild / crossScalaVersions := Seq(scala212)
+ThisBuild / crossScalaVersions := Seq(scala212, scala3)
+
+def sbtVersionForPlugin(scalaBinary: String): String =
+  scalaBinary match {
+    case "2.12" => "1.12.9"
+    case _      => "2.0.0-RC11"
+  }
 
 libraryDependencies ++= Seq(
   "org.eclipse.jgit"   % "org.eclipse.jgit" % "5.13.5.202508271544-r",
@@ -51,7 +66,8 @@ libraryDependencies ++= Seq(
   "org.scalatest"     %% "scalatest"        % "3.2.20" % Test
 )
 
-addSbtPlugin("com.github.sbt" % "sbt-pgp" % "2.3.1")
+addSbtPlugin("com.github.sbt" % "sbt-pgp"     % "2.3.1")
+addSbtPlugin("com.github.sbt" % "sbt2-compat" % "0.1.0")
 
 homepage := Some(url("https://github.com/pjfanning/sbt-source-dist"))
 
@@ -65,6 +81,35 @@ developers := List(
             url = url("https://github.com/mdedetrich")
   )
 )
+
+(pluginCrossBuild / sbtVersion) := sbtVersionForPlugin(scalaBinaryVersion.value)
+
+enablePlugins(SbtPlugin)
+
+scriptedLaunchOpts += ("-Dplugin.version=" + version.value)
+
+scriptedLaunchOpts := {
+  scriptedLaunchOpts.value ++
+    Seq("-Xmx1024M", "-Dplugin.version=" + version.value)
+}
+
+scriptedBufferLog := false
+scriptedSbt       := sbtVersionForPlugin(scalaBinaryVersion.value)
+
+ThisBuild / githubWorkflowOSes := Seq("ubuntu-latest", "macos-latest") // temp remove "windows-latest"
+
+ThisBuild / githubWorkflowJavaVersions := Seq(
+  // Java 17 first: publish job uses the head of this list when downloading staged artifacts; sbt 2 (Scala 3 axis) needs 17+.
+  JavaSpec.temurin("17"),
+  JavaSpec.temurin("8")
+)
+
+ThisBuild / githubWorkflowBuildMatrixExclusions ++= Seq(
+  MatrixExclude(Map("java" -> "temurin@8", "os" -> "macos-latest")),
+  MatrixExclude(Map("scala" -> scala3, "java" -> "temurin@8"))
+)
+
+ThisBuild / githubWorkflowScalaVersions := Seq(scala212, scala3)
 
 ThisBuild / githubWorkflowTargetTags ++= Seq("v*")
 ThisBuild / githubWorkflowPublishTargetBranches :=
@@ -95,14 +140,3 @@ ThisBuild / githubWorkflowPublish := Seq(
     )
   )
 )
-
-enablePlugins(SbtPlugin)
-
-scriptedLaunchOpts += ("-Dplugin.version=" + version.value)
-
-scriptedLaunchOpts := {
-  scriptedLaunchOpts.value ++
-    Seq("-Xmx1024M", "-Dplugin.version=" + version.value)
-}
-
-scriptedBufferLog := false

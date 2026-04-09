@@ -17,9 +17,7 @@
 
 package com.github.pjfanning.sourcedist
 
-import sbt.File
-
-final case class GeneratedDist(dist: File, checksum: File) {
-  def toSignedGeneratedDist(detachedSignature: File): SignedGeneratedDist =
+final case class GeneratedDist(dist: java.io.File, checksum: java.io.File) {
+  def toSignedGeneratedDist(detachedSignature: java.io.File): SignedGeneratedDist =
     SignedGeneratedDist(dist, checksum, detachedSignature)
 }
