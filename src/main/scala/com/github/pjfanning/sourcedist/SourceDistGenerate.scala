@@ -24,7 +24,6 @@ import java.time.ZoneOffset
 import sbt.internal.util.ManagedLogger
 import sbt.io.IO
 
-
 private[sourcedist] object SourceDistGenerate {
   private[sourcedist] def generateSourceDists(homeDir: String,
                                               prefix: String,
