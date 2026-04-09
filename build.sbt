@@ -43,7 +43,8 @@ scalacOptions ++= {
   } else Nil
 }
 
-ThisBuild / scalaVersion := "2.12.21"
+val scala212 = "2.12.21"
+ThisBuild / scalaVersion := scala212
 
 libraryDependencies ++= Seq(
   "org.eclipse.jgit"   % "org.eclipse.jgit" % "5.13.5.202508271544-r",
@@ -65,6 +66,30 @@ developers := List(
             url = url("https://github.com/mdedetrich")
   )
 )
+
+enablePlugins(SbtPlugin)
+
+scriptedLaunchOpts += ("-Dplugin.version=" + version.value)
+
+scriptedLaunchOpts := {
+  scriptedLaunchOpts.value ++
+    Seq("-Xmx1024M", "-Dplugin.version=" + version.value)
+}
+
+scriptedBufferLog := false
+
+ThisBuild / githubWorkflowOSes := Seq("ubuntu-latest", "macos-latest", "windows-latest")
+
+ThisBuild / githubWorkflowJavaVersions := Seq(
+  JavaSpec.temurin("8"),
+  JavaSpec.temurin("17")
+)
+
+ThisBuild / githubWorkflowBuildMatrixExclusions ++= Seq(
+  MatrixExclude(Map("java" -> "temurin@8", "os" -> "macos-latest"))
+)
+
+ThisBuild / githubWorkflowScalaVersions := Seq(scala212)
 
 ThisBuild / githubWorkflowTargetTags ++= Seq("v*")
 ThisBuild / githubWorkflowPublishTargetBranches :=
@@ -95,14 +120,3 @@ ThisBuild / githubWorkflowPublish := Seq(
     )
   )
 )
-
-enablePlugins(SbtPlugin)
-
-scriptedLaunchOpts += ("-Dplugin.version=" + version.value)
-
-scriptedLaunchOpts := {
-  scriptedLaunchOpts.value ++
-    Seq("-Xmx1024M", "-Dplugin.version=" + version.value)
-}
-
-scriptedBufferLog := false
