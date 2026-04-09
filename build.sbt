@@ -105,6 +105,7 @@ ThisBuild / githubWorkflowJavaVersions := Seq(
 )
 
 ThisBuild / githubWorkflowBuildMatrixExclusions ++= Seq(
+  MatrixExclude(Map("java" -> "temurin@8", "os" -> "macos-latest")),
   MatrixExclude(Map("scala" -> scala3, "java" -> "temurin@8"))
 )
 
