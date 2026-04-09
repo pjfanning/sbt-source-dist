@@ -49,8 +49,8 @@ scalacOptions ++= {
 }
 
 val scala212 = "2.12.21"
-val scala3 = "3.8.2"
-ThisBuild / scalaVersion := scala212
+val scala3   = "3.8.2"
+ThisBuild / scalaVersion       := scala212
 ThisBuild / crossScalaVersions := Seq(scala212)
 ThisBuild / crossScalaVersions := Seq(scala212, scala3)
 
@@ -66,7 +66,7 @@ libraryDependencies ++= Seq(
   "org.scalatest"     %% "scalatest"        % "3.2.20" % Test
 )
 
-addSbtPlugin("com.github.sbt" % "sbt-pgp" % "2.3.1")
+addSbtPlugin("com.github.sbt" % "sbt-pgp"     % "2.3.1")
 addSbtPlugin("com.github.sbt" % "sbt2-compat" % "0.1.0")
 
 homepage := Some(url("https://github.com/pjfanning/sbt-source-dist"))
@@ -94,7 +94,7 @@ scriptedLaunchOpts := {
 }
 
 scriptedBufferLog := false
-scriptedSbt := sbtVersionForPlugin(scalaBinaryVersion.value)
+scriptedSbt       := sbtVersionForPlugin(scalaBinaryVersion.value)
 
 ThisBuild / githubWorkflowOSes := Seq("ubuntu-latest", "macos-latest", "windows-latest")
 

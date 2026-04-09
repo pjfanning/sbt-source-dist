@@ -59,7 +59,9 @@ private[sourcedist] object SourceDistGenerate {
       IO.delete(toTgzFile)
     } else {
       logger.info(s"Creating tar archive at ${toTgzFile.getPath}")
-      logger.info(s"Using SOURCE_DATE_EPOCH=${TarUtils.fileTimeLong} ${TarUtils.fileTime.toInstant.atOffset(ZoneOffset.UTC)}")
+      logger.info(
+        s"Using SOURCE_DATE_EPOCH=${TarUtils.fileTimeLong} ${TarUtils.fileTime.toInstant.atOffset(ZoneOffset.UTC)}"
+      )
     }
     TarUtils.tgzFiles(toTgzFile, files, homeDir)
     GeneratedDist(toTgzFile, ShaUtils.writeShaDigest(toTgzFile, 512))
