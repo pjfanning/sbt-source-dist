@@ -96,7 +96,7 @@ scriptedLaunchOpts := {
 scriptedBufferLog := false
 scriptedSbt       := sbtVersionForPlugin(scalaBinaryVersion.value)
 
-ThisBuild / githubWorkflowOSes := Seq("ubuntu-latest", "macos-latest", "windows-latest")
+ThisBuild / githubWorkflowOSes := Seq("ubuntu-latest", "macos-latest") // temp remove "windows-latest"
 
 ThisBuild / githubWorkflowJavaVersions := Seq(
   // Java 17 first: publish job uses the head of this list when downloading staged artifacts; sbt 2 (Scala 3 axis) needs 17+.

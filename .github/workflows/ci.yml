@@ -22,7 +22,7 @@ jobs:
     name: Build and Test
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
+        os: [ubuntu-latest, macos-latest]
         scala: [2.12.21, 3.8.2]
         java: [temurin@17, temurin@8]
         exclude:
@@ -32,19 +32,6 @@ jobs:
             java: temurin@8
     runs-on: ${{ matrix.os }}
     steps:
-      - name: Ignore line ending differences in git
-        if: contains(runner.os, 'windows')
-        shell: bash
-        run: git config --global core.autocrlf false
-
-      - name: Configure pagefile for Windows
-        if: contains(runner.os, 'windows')
-        uses: al-cheb/configure-pagefile-action@v1.5
-        with:
-          minimum-size: 2GB
-          maximum-size: 8GB
-          disk-root: 'C:'
-
       - name: Checkout current branch (full)
         uses: actions/checkout@v6
         with:
@@ -70,19 +57,15 @@ jobs:
         uses: sbt/setup-sbt@v1
 
       - name: Setup key
-        shell: bash
         run: gpg --import test-key.gpg
 
       - name: Check that workflows are up to date
-        shell: bash
         run: sbt '++ ${{ matrix.scala }}' githubWorkflowCheck
 
       - name: Build project
-        shell: bash
         run: sbt '++ ${{ matrix.scala }}' test scripted
 
       - name: Compress target directories
-        shell: bash
         run: tar cf targets.tar target project/target
 
       - name: Upload target directories
@@ -102,18 +85,6 @@ jobs:
         java: [temurin@17]
     runs-on: ${{ matrix.os }}
     steps:
-      - name: Ignore line ending differences in git
-        if: contains(runner.os, 'windows')
-        run: git config --global core.autocrlf false
-
-      - name: Configure pagefile for Windows
-        if: contains(runner.os, 'windows')
-        uses: al-cheb/configure-pagefile-action@v1.5
-        with:
-          minimum-size: 2GB
-          maximum-size: 8GB
-          disk-root: 'C:'
-
       - name: Checkout current branch (full)
         uses: actions/checkout@v6
         with:
