@@ -38,7 +38,7 @@ scalacOptions ++=
   }
 
 scalacOptions ++= {
-  if (insideCI.value) {
+  if (insideCI.value && scalaBinaryVersion.value.startsWith("2.")) {
     val log = sLog.value
     log.info("Running in CI, enabling Scala2 optimizer")
     Seq(
