@@ -49,7 +49,7 @@ scalacOptions ++= {
 }
 
 val scala212 = "2.12.21"
-val scala3   = "3.8.2"
+val scala3   = "3.8.4"
 ThisBuild / scalaVersion       := scala212
 ThisBuild / crossScalaVersions := Seq(scala212)
 ThisBuild / crossScalaVersions := Seq(scala212, scala3)
@@ -57,7 +57,7 @@ ThisBuild / crossScalaVersions := Seq(scala212, scala3)
 def sbtVersionForPlugin(scalaBinary: String): String =
   scalaBinary match {
     case "2.12" => "1.12.9"
-    case _      => "2.0.0-RC11"
+    case _      => "2.0.3"
   }
 
 libraryDependencies ++= Seq(
