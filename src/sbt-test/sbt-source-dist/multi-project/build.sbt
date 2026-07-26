@@ -22,6 +22,7 @@ sourceDistName   := "apache-pekko"
 sourceDistSuffix := "20230331"
 
 lazy val subOne = Project(id = "sub", file("sub")).settings(
+  name             := "sub",
   sourceDistSuffix := "20230331"
 )
 
