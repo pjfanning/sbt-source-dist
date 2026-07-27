@@ -27,9 +27,9 @@ lazy val subOne = Project(id = "sub", file("sub")).settings(
 )
 
 TaskKey[Unit]("checkOutput") := {
-  val tgzFile = target.value / "dist" / "apache-pekko-0.1.9-src-20230331.tgz"
+  val tgzFile = (LocalRootProject / target).value / "dist" / "apache-pekko-0.1.9-src-20230331.tgz"
   assert(tgzFile.exists(), s"expected file not found: $tgzFile")
 
-  val shaFile = target.value / "dist" / "apache-pekko-0.1.9-src-20230331.tgz.sha512"
+  val shaFile = (LocalRootProject / target).value / "dist" / "apache-pekko-0.1.9-src-20230331.tgz.sha512"
   assert(shaFile.exists(), s"expected file not found: $shaFile")
 }
