@@ -91,7 +91,7 @@ class GitState(dir: File) {
       val path = treeWalk.getPathString
       if (path.startsWith(prefix)) buffer.append(path.substring(prefix.length))
     }
-    buffer
+    buffer.toSeq
   }
 
   private def removeStart(str: String, remove: String): String =

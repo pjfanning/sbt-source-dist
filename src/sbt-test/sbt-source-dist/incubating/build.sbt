@@ -20,3 +20,11 @@ version              := "0.1.9"
 sourceDistName       := "apache-pekko"
 sourceDistIncubating := true
 sourceDistSuffix     := "20230331"
+
+TaskKey[Unit]("checkOutput") := {
+  val tgzFile = target.value / "dist" / "apache-pekko-0.1.9-incubating-src-20230331.tgz"
+  assert(tgzFile.exists(), s"expected file not found: $tgzFile")
+
+  val shaFile = target.value / "dist" / "apache-pekko-0.1.9-incubating-src-20230331.tgz.sha512"
+  assert(shaFile.exists(), s"expected file not found: $shaFile")
+}

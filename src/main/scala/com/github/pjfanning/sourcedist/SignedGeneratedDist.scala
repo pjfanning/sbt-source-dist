@@ -17,6 +17,6 @@
 
 package com.github.pjfanning.sourcedist
 
-import sbt.File
+import java.io.File
 
 final case class SignedGeneratedDist(dist: File, checksum: File, detachedSignature: File)

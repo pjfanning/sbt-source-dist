@@ -51,7 +51,7 @@ private[sourcedist] object ExcludeUtils {
     val src  = Source.fromFile(file, StandardCharsets.UTF_8.name())
     val list = new PathPatternList(basePath)
     try
-      for (line <- src.getLines)
+      for (line <- src.getLines())
         if (line.nonEmpty && !line.startsWith("#")) {
           list.add(line)
         }

@@ -22,5 +22,14 @@ sourceDistName   := "apache-pekko"
 sourceDistSuffix := "20230331"
 
 lazy val subOne = Project(id = "sub", file("sub")).settings(
+  name             := "sub",
   sourceDistSuffix := "20230331"
 )
+
+TaskKey[Unit]("checkOutput") := {
+  val tgzFile = (LocalRootProject / target).value / "dist" / "apache-pekko-0.1.9-src-20230331.tgz"
+  assert(tgzFile.exists(), s"expected file not found: $tgzFile")
+
+  val shaFile = (LocalRootProject / target).value / "dist" / "apache-pekko-0.1.9-src-20230331.tgz.sha512"
+  assert(shaFile.exists(), s"expected file not found: $shaFile")
+}
