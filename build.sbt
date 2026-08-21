@@ -66,8 +66,8 @@ libraryDependencies ++= Seq(
   "org.scalatest"     %% "scalatest"        % "3.2.20" % Test
 )
 
-addSbtPlugin("com.github.sbt" % "sbt-pgp"     % "2.3.1")
-addSbtPlugin("com.github.sbt" % "sbt2-compat" % "0.1.0")
+addSbtPlugin("com.github.sbt" % "sbt-pgp"     % "2.3.2")
+addSbtPlugin("com.github.sbt" % "sbt2-compat" % "0.2.0")
 
 homepage := Some(url("https://github.com/pjfanning/sbt-source-dist"))
 
